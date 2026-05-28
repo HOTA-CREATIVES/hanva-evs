@@ -47,7 +47,7 @@ export function About() {
             </h3>
             
             <p className="text-stone-300 dark:text-stone-300 font-sans text-xs md:text-sm tracking-wide font-light leading-relaxed mb-8 max-w-2xl text-justify">
-              Founded on the pillars of luxury, elegant minimalism, and cinematic execution, <strong>Hanwa EVS</strong> is a unified creative agency. We bridge the temporary art of high-end Event Production with the permanent structure of modern Interior Architecture. 
+              Founded on the pillars of luxury, elegant minimalism, and cinematic execution, <strong>Haanav Eviors</strong> is a unified creative agency. We bridge the temporary art of high-end Event Production with the permanent structure of modern Interior Architecture. 
             </p>
             
             <p className="text-stone-400 font-sans text-xs md:text-sm tracking-wide font-light leading-relaxed mb-12 max-w-2xl text-justify">

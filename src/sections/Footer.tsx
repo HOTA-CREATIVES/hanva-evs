@@ -32,13 +32,20 @@ export function Footer() {
         <div className="md:col-span-5 flex flex-col items-start text-left">
           <button
             onClick={() => handleScrollTo("home")}
-            className="flex items-center gap-1.5 font-serif text-lg tracking-[0.25em] font-light text-white hover:opacity-90 uppercase cursor-pointer mb-6"
+            className="flex items-center gap-3 font-serif text-lg tracking-[0.25em] font-light text-white hover:opacity-90 uppercase cursor-pointer mb-6"
           >
-            HANWA <span className="text-[#D4AF37] font-semibold">EVS</span>
+            <img
+              src="/assets/logo.png"
+              alt="Haanav Eviors Logo"
+              className="w-7 h-7 rounded-full border border-[#D4AF37]/35 object-cover"
+            />
+            <span className="font-serif text-base tracking-[0.18em] font-light text-white uppercase">
+              HAANAV <span className="text-[#D4AF37] font-semibold">EVIORS</span>
+            </span>
           </button>
           
           <p className="text-stone-500 font-sans tracking-wide leading-relaxed mb-6 max-w-sm">
-            Orchestrating magnificent luxury experiences and drafting modern minimalist interior architecture. Based in Milan, Italy, serving a global cohort of discerning patrons.
+            Orchestrating magnificent luxury experiences and drafting modern minimalist interior architecture. <strong>We Design experiences. You live them.</strong> Based in Milan, Italy, serving a global cohort of discerning patrons.
           </p>
           
           <span className="text-[10px] text-stone-600 tracking-wider">
@@ -85,7 +92,7 @@ export function Footer() {
 
       {/* Copyright & Subscriptions Bar */}
       <div className="max-w-7xl mx-auto border-t border-stone-900/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-stone-600">
-        <p>&copy; {new Date().getFullYear()} Hanwa EVS. All Rights Reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Haanav Eviors. All Rights Reserved.</p>
         
         {/* Elite Sign-off */}
         <div className="flex items-center gap-4">

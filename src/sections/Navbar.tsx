@@ -85,9 +85,16 @@ export function Navbar() {
           {/* Brand Logo */}
           <button
             onClick={() => handleLinkClick("home")}
-            className="flex items-center gap-1.5 font-serif text-lg tracking-[0.25em] font-light text-white hover:opacity-90 uppercase cursor-pointer"
+            className="flex items-center gap-3 hover:opacity-90 cursor-pointer text-left"
           >
-            HANWA <span className="text-[#D4AF37] font-semibold">EVS</span>
+            <img
+              src="/assets/logo.png"
+              alt="Haanav Eviors Logo"
+              className="w-8 h-8 rounded-full border border-[#D4AF37]/40 object-cover"
+            />
+            <span className="font-serif text-sm md:text-base tracking-[0.18em] font-light text-white uppercase">
+              HAANAV <span className="text-[#D4AF37] font-semibold">EVIORS</span>
+            </span>
           </button>
 
           {/* Desktop Navigation Links */}

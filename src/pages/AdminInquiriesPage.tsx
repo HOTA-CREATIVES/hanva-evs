@@ -43,7 +43,7 @@ export function AdminInquiriesPage() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `Hanwa_EVS_Leads_${new Date().toISOString().split("T")[0]}.csv`);
+    link.setAttribute("download", `Haanav_Eviors_Leads_${new Date().toISOString().split("T")[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -52,7 +52,7 @@ export function AdminInquiriesPage() {
   // Clear single item
   const handleDeleteItem = (indexToDelete: number) => {
     try {
-      const existingStr = localStorage.getItem("hanwa_evs_inquiries");
+      const existingStr = localStorage.getItem("haanav_eviors_inquiries");
       if (existingStr) {
         const existing = JSON.parse(existingStr);
         // We need to reverse order matches because the screen shows descending sort
@@ -69,7 +69,7 @@ export function AdminInquiriesPage() {
 
         if (originalIndex !== -1) {
           existing.splice(originalIndex, 1);
-          localStorage.setItem("hanwa_evs_inquiries", JSON.stringify(existing));
+          localStorage.setItem("haanav_eviors_inquiries", JSON.stringify(existing));
           loadLeads();
         }
       }
@@ -81,7 +81,7 @@ export function AdminInquiriesPage() {
   // Clear all inquiries
   const handleClearAll = () => {
     if (window.confirm("Are you sure you want to clear all local lead inquiries? This action is irreversible.")) {
-      localStorage.removeItem("hanwa_evs_inquiries");
+      localStorage.removeItem("haanav_eviors_inquiries");
       setInquiries([]);
     }
   };

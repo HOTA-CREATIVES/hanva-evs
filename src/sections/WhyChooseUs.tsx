@@ -63,7 +63,7 @@ export function WhyChooseUs() {
             Architects of <span className="font-serif italic font-normal text-[#D4AF37] tracking-normal">Distinction</span>
           </h3>
           <p className="text-stone-400 font-sans text-xs md:text-sm tracking-wide font-light leading-relaxed">
-            At Hanwa EVS, luxury is not just an aesthetic; it is an exact technical standard. We combine structural safety, artistic boldness, and perfect coordination.
+            At Haanav Eviors, luxury is not just an aesthetic; it is an exact technical standard. We combine structural safety, artistic boldness, and perfect coordination.
           </p>
         </div>
 

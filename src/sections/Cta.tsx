@@ -92,7 +92,7 @@ export function Cta() {
             onClick={() => handleScrollToContact("contact")}
             icon={<MessageSquare className="w-3.5 h-3.5" />}
           >
-            Contact Hanwa EVS
+            Contact Haanav Eviors
           </Button>
         </motion.div>
       </div>

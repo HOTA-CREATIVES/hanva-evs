@@ -68,7 +68,7 @@ export function Hero() {
           transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="text-stone-300 dark:text-stone-300 font-sans text-sm md:text-base tracking-wide max-w-2xl font-light leading-relaxed mb-12 text-balance"
         >
-          Hanwa EVS combines premium high-end event management with modern interior architecture to shape unforgettable milestones and timeless, bespoke environments.
+          Haanav Eviors combines premium high-end event management with modern interior architecture to shape unforgettable milestones and timeless, bespoke environments.
         </motion.p>
 
         {/* Action Buttons */}

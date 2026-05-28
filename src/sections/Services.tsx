@@ -118,7 +118,7 @@ export function Services() {
             Dual Disciplines, <span className="font-serif italic font-normal text-[#D4AF37] tracking-normal">One</span> Standard
           </h3>
           <p className="text-stone-400 font-sans text-xs md:text-sm tracking-wide font-light leading-relaxed">
-            Hanwa EVS delivers balanced excellence. We orchestrate magnificent transient gatherings and compose timeless architectural realities with equal technical precision.
+            Haanav Eviors delivers balanced excellence. We orchestrate magnificent transient gatherings and compose timeless architectural realities with equal technical precision.
           </p>
         </div>
 

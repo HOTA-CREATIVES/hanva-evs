@@ -1,15 +1,11 @@
-/* 1. Import Premium Google Fonts for Luxury Aesthetics */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-
 @import "tailwindcss";
 
-/* 2. Configure Tailwind CSS v4 Theme Variables */
 @theme {
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* 3. Global CSS Customization & Refinements */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -17,7 +13,7 @@
   }
   
   body {
-    background-color: #0A0A0A;
+    background-color: #031F12; /* Premium Deep Forest Green */
     color: #FAFAFA;
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -30,6 +26,52 @@
     color: #1A1A1A;
   }
 
+  /* Dark Theme color overrides for Forest Green branding */
+  .bg-stone-950 {
+    background-color: #031F12 !important; /* Deep forest green background override */
+  }
+
+  .bg-stone-900 {
+    background-color: #052A19 !important; /* Sleek forest green card override */
+  }
+
+  .bg-stone-950\/40 {
+    background-color: #031F12\/40 !important;
+  }
+
+  .bg-stone-950\/80 {
+    background-color: #031F12\/80 !important;
+  }
+
+  .bg-stone-900\/20 {
+    background-color: #052A19\/20 !important;
+  }
+
+  .border-stone-900 {
+    border-color: #073C23 !important; /* Elegant dark-forest borders */
+  }
+
+  .border-stone-850 {
+    border-color: #09472A !important;
+  }
+
+  .border-stone-800 {
+    border-color: #0A502F !important;
+  }
+
+  .border-stone-800\/20 {
+    border-color: #0A502F\/20 !important;
+  }
+
+  .divide-stone-900 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #073C23 !important;
+  }
+
+  .divide-stone-900\/60 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #073C23\/60 !important;
+  }
+
+  /* Light Theme Specific Class Resets */
   html.light .bg-stone-950 {
     background-color: #FAFAFA !important;
   }
@@ -86,12 +128,23 @@
     border-color: #EBEBEB !important;
   }
 
+  /* Form Fields Styling */
+  input, select, textarea {
+    background-color: #031C10 !important;
+    border-color: #073C23 !important;
+    color: #FAFAFA !important;
+  }
+
   html.light input,
   html.light select,
   html.light textarea {
     background-color: #FFFFFF !important;
     border-color: #E5E5E5 !important;
     color: #1A1A1A !important;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #D4AF37 !important;
   }
 
   html.light input:focus,
@@ -108,7 +161,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #031F12;
 }
 
 html.light ::-webkit-scrollbar-track {
@@ -116,7 +169,7 @@ html.light ::-webkit-scrollbar-track {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #073C23;
   border-radius: 4px;
   transition: all 0.3s;
 }

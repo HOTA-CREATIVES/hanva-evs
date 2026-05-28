@@ -60,7 +60,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         {/* Luxury WhatsApp Direct Floating Action */}
         <motion.a
-          href="https://wa.me/39021234567?text=Hello%20Hanwa%20EVS%20Concierge%2C%20I%20would%20like%20to%20inquire%20about..."
+          href="https://wa.me/39021234567?text=Hello%20Haanav%20Eviors%20Concierge%2C%20I%20would%20like%20to%20inquire%20about..."
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, scale: 0.9 }}

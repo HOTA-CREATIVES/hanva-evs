@@ -30,9 +30,9 @@ export function LoadingScreen() {
               initial={{ opacity: 0, y: 15, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="text-3xl md:text-5xl font-serif tracking-[0.35em] text-white font-light text-center uppercase"
+              className="text-3xl md:text-5xl font-serif tracking-[0.25em] text-white font-light text-center uppercase"
             >
-              HANWA <span className="text-[#D4AF37] font-normal">EVS</span>
+              HAANAV <span className="text-[#D4AF37] font-normal">EVIORS</span>
             </motion.h1>
             
             {/* Divider */}
@@ -46,11 +46,11 @@ export function LoadingScreen() {
             {/* Luxury Subtext */}
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
+              animate={{ opacity: 0.8 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="text-[10px] uppercase tracking-[0.25em] text-stone-300 font-sans"
+              className="text-[10px] tracking-[0.15em] text-[#D4AF37] font-sans font-light italic"
             >
-              bespoke events &amp; interior architecture
+              We Design experiences. You live them
             </motion.p>
           </div>
 

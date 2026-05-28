@@ -17,7 +17,7 @@ const TESTIMONIALS_DATA: Testimonial[] = [
     name: "Aria Moretti",
     role: "Principal Owner",
     company: "Moretti Residences",
-    quote: "Hanwa EVS transformed our flagship penthouse suite. Their architectural detailing, wood paneling integrations, and material selection reflect absolute minimalism. Casa di Marmo is a masterpiece.",
+    quote: "Haanav Eviors transformed our flagship penthouse suite. Their architectural detailing, wood paneling integrations, and material selection reflect absolute minimalism. Casa di Marmo is a masterpiece.",
     rating: 5,
     avatar: "AM",
   },
@@ -60,7 +60,7 @@ export function Testimonials() {
             Client <span className="font-serif italic font-normal text-[#D4AF37] tracking-normal">Testimonials</span>
           </h3>
           <p className="text-stone-400 font-sans text-xs md:text-sm tracking-wide font-light leading-relaxed">
-            We partner with discerning patrons and global enterprises. Read about their customized design journeys with the Hanwa EVS executive team.
+            We partner with discerning patrons and global enterprises. Read about their customized design journeys with the Haanav Eviors executive team.
           </p>
         </div>
 

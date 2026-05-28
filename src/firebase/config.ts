@@ -104,10 +104,10 @@ export async function submitInquiry(data: InquiryData): Promise<{
 
   // 3. Store in LocalStorage (Always do this as an immutable local history/backup!)
   try {
-    const existingStr = localStorage.getItem("hanwa_evs_inquiries");
+    const existingStr = localStorage.getItem("haanav_eviors_inquiries");
     const existing = existingStr ? JSON.parse(existingStr) : [];
     existing.push(submissionData);
-    localStorage.setItem("hanwa_evs_inquiries", JSON.stringify(existing));
+    localStorage.setItem("haanav_eviors_inquiries", JSON.stringify(existing));
   } catch (err) {
     console.error("LocalStorage write failed:", err);
   }
@@ -130,7 +130,7 @@ export async function submitInquiry(data: InquiryData): Promise<{
  */
 export function getLocalInquiries(): InquiryData[] {
   try {
-    const data = localStorage.getItem("hanwa_evs_inquiries");
+    const data = localStorage.getItem("haanav_eviors_inquiries");
     return data ? JSON.parse(data) : [];
   } catch {
     return [];

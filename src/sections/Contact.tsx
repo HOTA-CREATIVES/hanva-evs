@@ -140,10 +140,10 @@ export function Contact() {
                     Concierge Channels
                   </h5>
                   <a
-                    href="mailto:inquiries@hanwaevs.com"
+                    href="mailto:inquiries@haanaveviors.com"
                     className="font-sans text-xs tracking-wide text-white hover:text-[#D4AF37] transition-colors block mb-1"
                   >
-                    inquiries@hanwaevs.com
+                    inquiries@haanaveviors.com
                   </a>
                   <a
                     href="mailto:gurunadar@gmail.com"
@@ -198,8 +198,8 @@ export function Contact() {
               >
                 <div className="w-4 h-4 bg-[#D4AF37] rounded-full flex items-center justify-center border-4 border-stone-950 shadow-[0_0_15px_rgba(212,175,55,0.8)]" />
                 <div className="bg-stone-900 border border-stone-850 px-3 py-1.5 rounded shadow-lg">
-                  <span className="font-serif text-[10px] uppercase text-white font-light tracking-[0.15em]">
-                    HANWA <span className="text-[#D4AF37] font-semibold">EVS</span>
+                  <span className="font-serif text-[10px] uppercase text-white font-light tracking-[0.12em]">
+                    HAANAV <span className="text-[#D4AF37] font-semibold">EVIORS</span>
                   </span>
                 </div>
               </motion.div>
