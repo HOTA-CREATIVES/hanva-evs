@@ -11,8 +11,9 @@ export interface InquiryData {
   timestamp?: Date;
 }
 
-// Google Apps Script Web App URL - Paste your deployed Apps Script URL here!
-export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoK-NnF7K0gXzI9pP3T9T4a1b0c_d5e6f7g8h9i0/exec"; // Placeholder
+// Google Apps Script Web App URL - configure via Vite env var `VITE_APPS_SCRIPT_URL`
+// Example: VITE_APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfy.../exec"
+export const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL || "";
 
 // Firebase configuration using Vite environment variables
 const firebaseConfig = {
@@ -25,9 +26,9 @@ const firebaseConfig = {
 };
 
 // Check if valid credentials are provided
-const isFirebaseConfigured = 
-  firebaseConfig.apiKey && 
-  firebaseConfig.projectId && 
+const isFirebaseConfigured =
+  firebaseConfig.apiKey &&
+  firebaseConfig.projectId &&
   firebaseConfig.projectId !== "YOUR_PROJECT_ID";
 
 let app;
@@ -43,7 +44,7 @@ if (isFirebaseConfigured) {
   }
 } else {
   console.warn(
-    "Firebase environment variables are missing. All submissions will fall back to LocalStorage and Apps Script only."
+    "Firebase environment variables are missing. All submissions will fall back to LocalStorage and Apps Script only.",
   );
 }
 
@@ -69,7 +70,7 @@ export async function submitInquiry(data: InquiryData): Promise<{
   let errorMsg = "";
 
   // 1. Submit to Google Apps Script
-  if (APPS_SCRIPT_URL && !APPS_SCRIPT_URL.includes("AKfycbxoK-NnF7K0gXzI9pP3T9T4a1b0c_d5e6f7g8h9i0")) {
+  if (APPS_SCRIPT_URL) {
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
@@ -79,7 +80,7 @@ export async function submitInquiry(data: InquiryData): Promise<{
         },
         body: JSON.stringify(submissionData),
       });
-      
+
       // Since mode is 'no-cors', we won't get the response status directly, but fetch succeeding means request was sent
       appsScriptSuccess = true;
     } catch (err: any) {
@@ -87,7 +88,9 @@ export async function submitInquiry(data: InquiryData): Promise<{
       errorMsg += `Apps Script: ${err.message || err}. `;
     }
   } else {
-    console.warn("Google Apps Script URL is empty or using placeholder. Skipping Apps Script.");
+    console.warn(
+      "Google Apps Script URL is not set. Skipping Apps Script submission.",
+    );
   }
 
   // 2. Submit to Firebase Firestore
@@ -118,8 +121,8 @@ export async function submitInquiry(data: InquiryData): Promise<{
     success: success || !isFirebaseConfigured, // If firebase is not configured, we consider LocalStorage backup as a local success
     appsScriptSuccess,
     firestoreSuccess,
-    message: success 
-      ? "Your premium inquiry has been securely sent. A design consultant will connect with you shortly." 
+    message: success
+      ? "Your premium inquiry has been securely sent. A design consultant will connect with you shortly."
       : `Submitting inquiry locally. ${errorMsg || "Stored successfully in LocalStorage."}`,
   };
 }

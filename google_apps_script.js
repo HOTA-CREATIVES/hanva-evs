@@ -1,6 +1,6 @@
 /**
  * HANWA EVS — Google Apps Script for Lead Capture
- * 
+ *
  * Instructions:
  * 1. Open a Google Sheet.
  * 2. Click on "Extensions" -> "Apps Script".
@@ -17,11 +17,15 @@
  */
 
 // --- CONFIGURATION ---
-const ADMIN_EMAIL = "gurunadar@gmail.com"; // Change to your preferred admin notification email
+const ADMIN_EMAIL = "haanaveviors@gmail.com"; // Change to your preferred admin notification email
 const BRAND_NAME = "Hanwa EVS";
 const COMPLEMENTARY_COLOR = "#D4AF37"; // Gold accent
 const DARK_BG = "#0A0A0A"; // Dark luxury theme background
 const LIGHT_BG = "#FAFAFA"; // Alabaster white theme text container
+// ID of the Google Sheet to store leads. Replace if you want a different sheet.
+const SHEET_ID = "1fvYLuRJWs4qA6C5lPGboES5BWq3BmF77RL0P4R4tnxA";
+// Optional: specify a sheet name. Leave empty to use the first sheet.
+const SHEET_NAME = "";
 
 function doPost(e) {
   try {
@@ -34,7 +38,9 @@ function doPost(e) {
 
     // Handle OPTIONS preflight request
     if (e.parameter.method === "OPTIONS" || !e.postData) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "CORS preflight ok" }))
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: "success", message: "CORS preflight ok" }),
+      )
         .setMimeType(ContentService.MimeType.JSON)
         .setHeaders(headers);
     }
@@ -49,11 +55,29 @@ function doPost(e) {
     const message = data.message || "N/A";
 
     // 1. Store in Google Sheets
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
+    // Prefer opening by ID (works for web app deployments). Fall back to active spreadsheet for container-bound usage.
+    let spreadsheet;
+    try {
+      spreadsheet = SpreadsheetApp.openById(SHEET_ID);
+    } catch (err) {
+      // If openById fails (for example during local testing in container-bound editor), fall back to active spreadsheet
+      spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    }
+
+    const sheet = SHEET_NAME
+      ? spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.getSheets()[0]
+      : spreadsheet.getSheets()[0];
+
     // Add header row if sheet is empty
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Timestamp", "Client Name", "Email Address", "Phone Number", "Service of Interest", "Message / Requirements"]);
+      sheet.appendRow([
+        "Timestamp",
+        "Client Name",
+        "Email Address",
+        "Phone Number",
+        "Service of Interest",
+        "Message / Requirements",
+      ]);
       // Format header
       const headerRange = sheet.getRange(1, 1, 1, 6);
       headerRange.setBackground("#111111");
@@ -62,7 +86,7 @@ function doPost(e) {
       headerRange.setFontFamily("Arial");
       sheet.setFrozenRows(1);
     }
-    
+
     // Append user data
     sheet.appendRow([timestamp, name, email, phone, service, message]);
     sheet.autoResizeColumns(1, 6);
@@ -76,42 +100,48 @@ function doPost(e) {
     sendAdminEmail(name, email, phone, service, message, timestamp);
 
     // Return success response
-    return ContentService.createTextOutput(JSON.stringify({
-      status: "success",
-      message: "Lead recorded and notifications sent successfully."
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
-
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "success",
+        message: "Lead recorded and notifications sent successfully.",
+      }),
+    )
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders(headers);
   } catch (error) {
     Logger.log("Error in doPost: " + error.toString());
-    
-    return ContentService.createTextOutput(JSON.stringify({
-      status: "error",
-      message: error.toString()
-    }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      "Access-Control-Allow-Origin": "*",
-    });
+
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: error.toString(),
+      }),
+    )
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({
+        "Access-Control-Allow-Origin": "*",
+      });
   }
 }
 
 // Support GET requests for easy deployment testing
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "success",
-    message: "Hanwa EVS Lead Capture Endpoint is active. Send a POST request to submit inquiries."
-  }))
-  .setMimeType(ContentService.MimeType.JSON)
-  .setHeaders({
-    "Access-Control-Allow-Origin": "*",
-  });
+  return ContentService.createTextOutput(
+    JSON.stringify({
+      status: "success",
+      message:
+        "Hanwa EVS Lead Capture Endpoint is active. Send a POST request to submit inquiries.",
+    }),
+  )
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      "Access-Control-Allow-Origin": "*",
+    });
 }
 
 function sendResponderEmail(name, email, service) {
   const subject = `Your Inquiry with ${BRAND_NAME} — Crafted Experiences & Elegant Spaces`;
-  
+
   const htmlBody = `
     <div style="background-color: ${DARK_BG}; padding: 40px 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #E5E5E5; text-align: center;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #121212; border: 1px solid #222222; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
@@ -171,13 +201,13 @@ function sendResponderEmail(name, email, service) {
     to: email,
     subject: subject,
     htmlBody: htmlBody,
-    replyTo: ADMIN_EMAIL
+    replyTo: ADMIN_EMAIL,
   });
 }
 
 function sendAdminEmail(name, email, phone, service, message, timestamp) {
   const subject = `🚨 NEW LEAD: ${name} — ${service} [${BRAND_NAME}]`;
-  
+
   const htmlBody = `
     <div style="background-color: #F6F6F6; padding: 30px 15px; font-family: Arial, sans-serif; color: #333333;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E0E0E0; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -242,6 +272,6 @@ function sendAdminEmail(name, email, phone, service, message, timestamp) {
   MailApp.sendEmail({
     to: ADMIN_EMAIL,
     subject: subject,
-    htmlBody: htmlBody
+    htmlBody: htmlBody,
   });
 }
