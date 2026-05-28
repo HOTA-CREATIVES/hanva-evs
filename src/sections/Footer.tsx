@@ -39,8 +39,8 @@ export function Footer() {
               alt="Haanav Eviors Logo"
               className="w-7 h-7 rounded-full border border-[#D4AF37]/35 object-cover"
             />
-            <span className="font-serif text-base tracking-[0.18em] font-light text-white uppercase">
-              HAANAV <span className="text-[#D4AF37] font-semibold">EVIORS</span>
+            <span className="font-serif text-base tracking-[0.12em] font-light text-white">
+              Haanav <span className="text-[#D4AF37] font-semibold">Eviors</span>
             </span>
           </button>
           

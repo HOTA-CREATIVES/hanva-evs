@@ -92,8 +92,8 @@ export function Navbar() {
               alt="Haanav Eviors Logo"
               className="w-8 h-8 rounded-full border border-[#D4AF37]/40 object-cover"
             />
-            <span className="font-serif text-sm md:text-base tracking-[0.18em] font-light text-white uppercase">
-              HAANAV <span className="text-[#D4AF37] font-semibold">EVIORS</span>
+            <span className="font-serif text-sm md:text-base tracking-[0.12em] font-light text-white">
+              Haanav <span className="text-[#D4AF37] font-semibold">Eviors</span>
             </span>
           </button>
 
@@ -109,22 +109,6 @@ export function Navbar() {
                 <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#D4AF37] group-hover:w-full transition-all duration-300 ease-out" />
               </button>
             ))}
-
-            {location.pathname === "/admin-inquiries" ? (
-              <button
-                onClick={() => navigate("/")}
-                className="text-stone-300 hover:text-[#D4AF37] text-[11px] font-sans font-medium uppercase tracking-[0.2em] transition-colors duration-300 cursor-pointer"
-              >
-                Main Site
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate("/admin-inquiries")}
-                className="text-stone-500 hover:text-stone-300 dark:text-stone-500 dark:hover:text-stone-300 text-[10px] font-sans font-medium uppercase tracking-[0.2em] transition-colors duration-300 cursor-pointer"
-              >
-                Admin
-              </button>
-            )}
           </div>
 
           {/* Controls: Theme & Mobile Toggle */}
@@ -169,22 +153,6 @@ export function Navbar() {
                     {link.label}
                   </button>
                 ))}
-                
-                {location.pathname === "/admin-inquiries" ? (
-                  <button
-                    onClick={() => { setIsOpen(false); navigate("/"); }}
-                    className="text-left text-stone-300 hover:text-[#D4AF37] text-xs font-sans font-medium uppercase tracking-[0.2em] transition-all cursor-pointer"
-                  >
-                    Return to Main Site
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => { setIsOpen(false); navigate("/admin-inquiries"); }}
-                    className="text-left text-stone-500 hover:text-stone-300 text-xs font-sans font-medium uppercase tracking-[0.2em] transition-all cursor-pointer"
-                  >
-                    Inquiries Board
-                  </button>
-                )}
               </div>
             </motion.div>
           )}
