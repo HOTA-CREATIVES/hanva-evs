@@ -1,1 +1,143 @@
+/* 1. Import Premium Google Fonts for Luxury Aesthetics */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
+
+/* 2. Configure Tailwind CSS v4 Theme Variables */
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 3. Global CSS Customization & Refinements */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  body {
+    background-color: #0A0A0A;
+    color: #FAFAFA;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  /* Light Theme Overrides (Alabaster Minimalist Design Language) */
+  html.light body {
+    background-color: #FAFAFA;
+    color: #1A1A1A;
+  }
+
+  html.light .bg-stone-950 {
+    background-color: #FAFAFA !important;
+  }
+
+  html.light .bg-stone-900 {
+    background-color: #F5F5F5 !important;
+  }
+
+  html.light .bg-stone-950\/40 {
+    background-color: #FAFAFA\/40 !important;
+  }
+
+  html.light .bg-stone-950\/80 {
+    background-color: #FAFAFA\/80 !important;
+  }
+
+  html.light .bg-stone-900\/20 {
+    background-color: #F0F0F0\/25 !important;
+  }
+
+  html.light .text-white {
+    color: #0A0A0A !important;
+  }
+
+  html.light .text-stone-300 {
+    color: #4A4A4A !important;
+  }
+
+  html.light .text-stone-400 {
+    color: #666666 !important;
+  }
+
+  html.light .border-stone-900 {
+    border-color: #E5E5E5 !important;
+  }
+
+  html.light .border-stone-850 {
+    border-color: #EBEBEB !important;
+  }
+
+  html.light .border-stone-800 {
+    border-color: #D6D6D6 !important;
+  }
+
+  html.light .border-stone-800\/20 {
+    border-color: #A3A3A3\/15 !important;
+  }
+
+  html.light .divide-stone-900 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #E5E5E5 !important;
+  }
+
+  html.light .divide-stone-900\/60 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #EBEBEB !important;
+  }
+
+  html.light input,
+  html.light select,
+  html.light textarea {
+    background-color: #FFFFFF !important;
+    border-color: #E5E5E5 !important;
+    color: #1A1A1A !important;
+  }
+
+  html.light input:focus,
+  html.light select:focus,
+  html.light textarea:focus {
+    border-color: #D4AF37 !important;
+  }
+}
+
+/* 4. Custom Architectural Thin Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #FAFAFA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #E5E5E5;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #C5A028;
+}
+
+/* 5. Custom Floating Inputs Typography Tweaks */
+input, select, textarea {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+}
