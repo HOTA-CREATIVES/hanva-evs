@@ -7,10 +7,10 @@ export function Hero() {
   const [isConceptOpen, setIsConceptOpen] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
 
-  // Background visual cross-fade loops between Event Setup & Interior Space
+  // Background visual cross-fade loops between Event Setup & Interior Space (Indian & Andhra Heritage)
   const backgrounds = [
-    "/assets/hero_bg.png", // Luxury Lakeside Gala Event
-    "/assets/portfolio_interior_living.png", // Custom Residential Penthouse Interior
+    "/assets/hero_telugu_wedding.png", // Grand Telugu Mandapam Ceremony, Andhra Pradesh
+    "/assets/hero_andhra_interior.png", // Royal Andhra Teakwood Heritage Interior
   ];
 
   useEffect(() => {
@@ -219,16 +219,16 @@ export function Hero() {
 
               <div className="space-y-4 font-sans text-xs leading-relaxed text-stone-300 text-justify">
                 <p>
-                  <strong>The Ambient Setting:</strong> The visual canvas opens inside a dimly lit, high-concept architectural Italian penthouse (minimalist concrete texture slates, warm dark wood slats, floor-to-ceiling glass windows streaming deep sunset rays). A slow tracking shot glides forward over custom marble flooring.
+                  <strong>The Ambient Setting:</strong> The visual canvas opens inside a grand modern residential living room inspired by Andhra Pradesh heritage. Sunset streams through expansive glass panes, illuminating custom dark teakwood slates, hand-carved relief borders, and warm glowing brass samayalu lamps on stone platforms.
                 </p>
                 <p>
-                  <strong>The Seamless Transition:</strong> As the camera moves forward, a thin gold vertical pillar slowly wipes across the frame. Behind this passing boundary line, the environment shifts: the concrete floor seamlessly becomes an exquisite dark-mirrored gala runway reflecting suspended overhead fairy lights.
+                  <strong>The Seamless Transition:</strong> As the camera glides forward over seamless polished stone, a thin golden archway wipes across the frame. Behind this passing boundary line, the residential sanctuary transforms into a grand open-air Telugu wedding mandapam under a star-swept sky.
                 </p>
                 <p>
-                  <strong>The Metamorphosis:</strong> The raw wood slates dissolve into an elegant, climbing wall of white orchids. The quiet sunset rays bloom into dramatic, golden volumetric spotlights centered around high-end dinner service details.
+                  <strong>The Metamorphosis:</strong> The heritage teakwood panels dissolve into an majestic wall of fresh orange marigold and white jasmine flower garlands. The soft ambient room glow rises into dramatic, warm golden spotlight shafts centered around a brilliant, gold-carved temple-pillar wedding canopy.
                 </p>
                 <p>
-                  <strong>The Atmospheric Binder:</strong> The entire loop is bound together by a slow, suspended levitation of glowing champagne-gold particles drifting throughout the air—symbolizing both the dust of custom architectural builds and the sparkling fragments of luxury celebrations.
+                  <strong>The Atmospheric Binder:</strong> The entire loop is bound together by a slow, suspended drift of golden dust particles and marigold petal fragments floating through the air—representing both the dust of high-tolerance craftsmanship and the sparkles of elite celebration.
                 </p>
               </div>
 
