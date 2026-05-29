@@ -46,16 +46,16 @@ export function Hero() {
             src={backgrounds[bgIndex]}
             alt="Masters of Atmosphere Showcase"
             initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 0.28, scale: 1 }}
+            animate={{ opacity: 0.52, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.2, ease: "easeInOut" }}
             className="absolute inset-0 w-full h-full object-cover object-center filter contrast-[1.05]"
           />
         </AnimatePresence>
         
-        {/* Luxury Vignettes and volumetric overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#031F12] via-[#031F12]/30 to-[#031F12]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#031F12] via-transparent to-[#031F12]" />
+        {/* Luxury Vignettes and volumetric overlays (Neutral Dark, no green tint) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/65" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/45" />
       </div>
 
       {/* Fine-Lined Architectural Accents */}
