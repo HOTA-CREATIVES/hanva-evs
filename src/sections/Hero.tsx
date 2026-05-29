@@ -111,172 +111,130 @@ export function Hero() {
         <div className="absolute top-0 right-1/3 w-[1px] h-full bg-stone-900/10" />
       </div>
 
-      {/* 2. Primary Hero Canvas (Symmetrical 3-Column Split: Events Left, Brand Center, Interiors Right) */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 flex-grow flex flex-col justify-center py-12 md:py-16 gap-8">
+      {/* A. LEFT FULL-HEIGHT SIDE PANEL (Bespoke Celebrations - Desktop only) */}
+      <div className="absolute left-0 top-0 bottom-0 w-[30%] xl:w-[32%] z-10 hidden lg:block select-none overflow-hidden border-r border-[#D4AF37]/15">
+        <img
+          src="/assets/hero_left.jpg"
+          alt="Haanav Eviors Bespoke Event Celebrations"
+          className="w-full h-full object-cover"
+        />
+        {/* Subtle corner metadata tag */}
+        <div className="absolute bottom-6 left-6 z-20 bg-stone-950/65 backdrop-blur-md px-3 py-1.5 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
+          Bespoke Celebrations
+        </div>
+      </div>
+
+      {/* B. CENTER CANVASES AREA (Brand Identity and Symmetrical Action block) */}
+      <div className="relative z-20 max-w-xl mx-auto px-6 flex-grow flex flex-col items-center justify-center py-10 gap-6 text-center w-full">
         
-        {/* Responsive Grid for Visuals and Logo */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center w-full">
+        {/* Centered Brand Logo Monogram (Seamlessly Merged with Page Background) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[420px] aspect-[5/4] overflow-hidden select-none"
+        >
+          <img
+            src="/assets/logo_full.jpg"
+            alt="Haanav Eviors - Events & Interiors Logo"
+            className="w-full h-full object-cover filter brightness-[1.03]"
+            style={{
+              maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
+            }}
+          />
+        </motion.div>
+
+        {/* Mobile/Tablet Side-by-Side Dual Portfolio Preview Grid (Hidden on Desktop) */}
+        <div className="grid grid-cols-2 gap-4 w-full max-w-[500px] lg:hidden mt-2">
           
-          {/* A. LEFT COLUMN (Desktop: Event Management visual / Mobile: Hidden from this column to stack neatly below) */}
-          <div className="lg:col-span-4 w-full justify-center lg:justify-start hidden lg:flex">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-[420px] aspect-[4/5] xl:aspect-[1/1.3] overflow-hidden rounded shadow-2xl relative group cursor-pointer"
-              style={{
-                // Smooth right edge fade to merge with the dark background green
-                maskImage: "linear-gradient(to right, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)",
-                WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,1) 82%, rgba(0,0,0,0) 100%)",
-              }}
-            >
-              {/* Subtle inner hover glow */}
-              <div className="absolute inset-0 bg-[#D4AF37]/0 group-hover:bg-[#D4AF37]/5 transition-colors duration-700 pointer-events-none z-10" />
-
-              <img
-                src="/assets/hero_left.jpg"
-                alt="Haanav Eviors Bespoke Event Celebrations"
-                className="w-full h-full object-cover transform scale-100 group-hover:scale-103 transition-transform duration-[1.5s] ease-out"
-              />
-
-              {/* Small subtle corner metadata tag */}
-              <div className="absolute bottom-4 left-4 z-20 bg-stone-950/60 backdrop-blur-md px-3 py-1 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
-                Bespoke Celebrations
-              </div>
-            </motion.div>
-          </div>
-
-          {/* B. CENTER COLUMN (Brand Identity, Actions, and Concept Link) */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-center gap-6 text-center w-full">
-            
-            {/* Logo Monogram (Seamlessly Merged with Page Background) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-[420px] aspect-[5/4] overflow-hidden select-none"
-            >
-              <img
-                src="/assets/logo_full.jpg"
-                alt="Haanav Eviors - Events & Interiors Logo"
-                className="w-full h-full object-cover filter brightness-[1.03]"
-                style={{
-                  maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
-                  WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
-                }}
-              />
-            </motion.div>
-
-            {/* Mobile/Tablet Side-by-Side Dual Portfolio Preview Grid (Hidden on Desktop) */}
-            <div className="grid grid-cols-2 gap-4 w-full max-w-[500px] lg:hidden mt-2">
-              
-              {/* Event preview card (mobile) */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 1 }}
-                className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
-              >
-                <img
-                  src="/assets/hero_left.jpg"
-                  alt="Bespoke Celebrations"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
-                  Bespoke Celebrations
-                </div>
-              </motion.div>
-
-              {/* Interior preview card (mobile) */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 1 }}
-                className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
-              >
-                <img
-                  src="/assets/hero_right.jpg"
-                  alt="Bespoke Interiors"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
-                  Sanctuary Designs
-                </div>
-              </motion.div>
-
+          {/* Event preview card (mobile) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 1 }}
+            className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
+          >
+            <img
+              src="/assets/hero_left.jpg"
+              alt="Bespoke Celebrations"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
+              Bespoke Celebrations
             </div>
+          </motion.div>
 
-            {/* Actions Block (Vertically Stacked for Compact Symmetrical Fit on Desktop) */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center justify-center gap-4 w-full max-w-[320px] mt-2"
-            >
-              <Button
-                variant="gold"
-                size="lg"
-                className="w-full justify-center"
-                onClick={() => handleScrollToContact("Corporate Events")}
-                icon={<ArrowRight className="w-3.5 h-3.5" />}
-              >
-                Orchestrate An Event
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full justify-center border-stone-850 text-white hover:border-[#D4AF37] bg-stone-950/20 backdrop-blur-sm"
-                onClick={() => handleScrollToContact("Residential Interiors")}
-              >
-                Commission A Space
-              </Button>
-
-              {/* Minimal concept link */}
-              <button
-                onClick={() => setIsConceptOpen(true)}
-                ref={revealButtonRef}
-                type="button"
-                className="flex items-center justify-center gap-1.5 text-[9px] uppercase tracking-widest text-stone-500 hover:text-[#D4AF37] font-semibold transition-all duration-300 cursor-pointer mt-2 py-2"
-              >
-                <HelpCircle className="w-3 h-3 text-[#D4AF37]" />
-                <span className="font-montserrat">Narrative Concept</span>
-              </button>
-            </motion.div>
-
-          </div>
-
-          {/* C. RIGHT COLUMN (Desktop: Interior Design visual / Mobile: Hidden from this column to stack neatly below) */}
-          <div className="lg:col-span-4 w-full justify-center lg:justify-end hidden lg:flex">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-[420px] aspect-[4/5] xl:aspect-[1/1.3] overflow-hidden rounded shadow-2xl relative group cursor-pointer"
-              style={{
-                // Smooth left edge fade to merge with the dark background green
-                maskImage: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%)",
-                WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 18%)",
-              }}
-            >
-              {/* Subtle inner hover glow */}
-              <div className="absolute inset-0 bg-[#D4AF37]/0 group-hover:bg-[#D4AF37]/5 transition-colors duration-700 pointer-events-none z-10" />
-
-              <img
-                src="/assets/hero_right.jpg"
-                alt="Haanav Eviors Bespoke Interior Living Sanctuary"
-                className="w-full h-full object-cover transform scale-100 group-hover:scale-103 transition-transform duration-[1.5s] ease-out"
-              />
-
-              {/* Small subtle corner metadata tag */}
-              <div className="absolute bottom-4 left-4 z-20 bg-stone-950/60 backdrop-blur-md px-3 py-1 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
-                Featured Sanctuary Design
-              </div>
-            </motion.div>
-          </div>
+          {/* Interior preview card (mobile) */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
+          >
+            <img
+              src="/assets/hero_right.jpg"
+              alt="Bespoke Interiors"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
+              Sanctuary Designs
+            </div>
+          </motion.div>
 
         </div>
 
+        {/* Action buttons Block (Symmetrical Fit) */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center justify-center gap-4 w-full max-w-[320px] mt-2"
+        >
+          <Button
+            variant="gold"
+            size="lg"
+            className="w-full justify-center"
+            onClick={() => handleScrollToContact("Corporate Events")}
+            icon={<ArrowRight className="w-3.5 h-3.5" />}
+          >
+            Orchestrate An Event
+          </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full justify-center border-stone-850 text-white hover:border-[#D4AF37] bg-stone-950/20 backdrop-blur-sm"
+            onClick={() => handleScrollToContact("Residential Interiors")}
+          >
+            Commission A Space
+          </Button>
+
+          {/* Minimal concept link */}
+          <button
+            onClick={() => setIsConceptOpen(true)}
+            ref={revealButtonRef}
+            type="button"
+            className="flex items-center justify-center gap-1.5 text-[9px] uppercase tracking-widest text-stone-500 hover:text-[#D4AF37] font-semibold transition-all duration-300 cursor-pointer mt-2 py-2"
+          >
+            <HelpCircle className="w-3 h-3 text-[#D4AF37]" />
+            <span className="font-montserrat">Narrative Concept</span>
+          </button>
+        </motion.div>
+
+      </div>
+
+      {/* C. RIGHT FULL-HEIGHT SIDE PANEL (Sanctuary Designs - Desktop only) */}
+      <div className="absolute right-0 top-0 bottom-0 w-[30%] xl:w-[32%] z-10 hidden lg:block select-none overflow-hidden border-l border-[#D4AF37]/15">
+        <img
+          src="/assets/hero_right.jpg"
+          alt="Haanav Eviors Bespoke Interior Living Sanctuary"
+          className="w-full h-full object-cover"
+        />
+        {/* Subtle corner metadata tag */}
+        <div className="absolute bottom-6 right-6 z-20 bg-stone-950/65 backdrop-blur-md px-3 py-1.5 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
+          Featured Sanctuary Design
+        </div>
       </div>
 
 
