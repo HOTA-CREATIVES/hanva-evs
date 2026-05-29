@@ -114,7 +114,7 @@ export function Hero() {
       {/* A. LEFT FULL-HEIGHT SIDE PANEL (Bespoke Celebrations - Desktop only) */}
       <div className="absolute left-0 top-0 bottom-0 w-[30%] xl:w-[32%] z-10 hidden lg:block select-none overflow-hidden border-r border-[#D4AF37]/15">
         <img
-          src="/assets/hero_left.png"
+          src="/assets/hero_left.jpg"
           alt="Haanav Eviors Bespoke Event Celebrations"
           className="w-full h-full object-cover"
         />
@@ -156,7 +156,7 @@ export function Hero() {
             className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
           >
             <img
-              src="/assets/hero_left.png"
+              src="/assets/hero_left.jpg"
               alt="Bespoke Celebrations"
               className="w-full h-full object-cover"
             />
