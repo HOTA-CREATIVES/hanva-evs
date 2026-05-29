@@ -1,59 +1,100 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, HelpCircle, X, Award, CheckCircle } from "lucide-react";
+import { ArrowRight, HelpCircle, X, Calendar, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { submitInquiry } from "@/firebase/config";
 
-// Background visual cross-fade loops between Event Setup & Interior Space
+/* 
+// Background visual cross-fade loops commented out as requested
 const backgrounds = [
-  "/assets/hero_telugu_wedding.png", // Grand Telugu Mandapam Ceremony, Andhra Pradesh
-  "/assets/hero_andhra_interior.png", // Royal Andhra Teakwood Heritage Interior
+  "/assets/hero_telugu_wedding.png", 
+  "/assets/hero_andhra_interior.png", 
 ];
+*/
 
 export function Hero() {
   const [isConceptOpen, setIsConceptOpen] = useState(false);
-  const [bgIndex, setBgIndex] = useState(0);
-
   const revealButtonRef = useRef<HTMLButtonElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % backgrounds.length);
-    }, 8000); // 8-second slow transition loop
-    return () => clearInterval(interval);
-  }, []);
+  // Quick Lead Capture State
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    contact: "",
+    service: "Corporate Events",
+  });
+  const [leadStatus, setLeadStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+  const [leadLoading, setLeadLoading] = useState(false);
 
-  // Close on Escape and restore focus
-  useEffect(() => {
-    if (!isConceptOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsConceptOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [isConceptOpen]);
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadForm.name || !leadForm.contact) {
+      setLeadStatus({
+        type: "error",
+        message: "Please enter your name and contact details.",
+      });
+      return;
+    }
+    setLeadLoading(true);
+    setLeadStatus({ type: null, message: "" });
+
+    try {
+      const result = await submitInquiry({
+        name: leadForm.name,
+        email: leadForm.contact.includes("@") ? leadForm.contact : "quick-lead@hanavevs.com",
+        phone: !leadForm.contact.includes("@") ? leadForm.contact : "0000000000",
+        service: leadForm.service,
+        message: `Quick Callback Inquiry from Hero Border Gateway.`,
+      });
+
+      if (result.success) {
+        setLeadStatus({
+          type: "success",
+          message: "Request received. A design representative will reach out shortly.",
+        });
+        setLeadForm({ name: "", contact: "", service: "Corporate Events" });
+      } else {
+        setLeadStatus({
+          type: "error",
+          message: "Callback registration failed. Please try again.",
+        });
+      }
+    } catch (err) {
+      setLeadStatus({
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setLeadLoading(false);
+    }
+  };
 
   // Focus management: focus dialog close button when opened, restore to opener when closed
   useEffect(() => {
     if (isConceptOpen) {
-      // give modal a tick to render
       setTimeout(() => closeButtonRef.current?.focus());
     } else {
       setTimeout(() => revealButtonRef.current?.focus());
     }
   }, [isConceptOpen]);
 
-  const handleScrollToContact = (serviceCategory: "Corporate Events" | "Residential Interiors") => {
+  const handleScrollToContact = (
+    serviceCategory: "Corporate Events" | "Residential Interiors",
+  ) => {
     const contactSection = document.getElementById("contact");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });
-      
+
       // Auto-set the dropdown value in form
-      const selectElement = document.getElementById("service-select") as HTMLSelectElement;
+      const selectElement = document.getElementById(
+        "service-select",
+      ) as HTMLSelectElement;
       if (selectElement) {
         selectElement.value = serviceCategory;
-        // dispatch change so React/non-controlled listeners pick it up
-        selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+        selectElement.dispatchEvent(new Event("change", { bubbles: true }));
       }
     }
   };
@@ -61,27 +102,8 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-stone-950 pt-24"
+      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-[#012712] pt-28"
     >
-      {/* 1. Dynamic Cross-Fading Cinematic Background */}
-      <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={bgIndex}
-            src={backgrounds[bgIndex]}
-            alt=""
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1.0, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2.2, ease: "easeInOut" }}
-            className="absolute inset-0 w-full h-full object-cover object-center filter contrast-[1.05]"
-          />
-        </AnimatePresence>
-        
-        {/* Luxury Vignettes and volumetric overlays (Neutral Dark, no green tint) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/45" />
-      </div>
 
       {/* Fine-Lined Architectural Accents */}
       <div className="absolute inset-10 border border-stone-800/10 pointer-events-none z-10 hidden md:block">
@@ -89,129 +111,69 @@ export function Hero() {
         <div className="absolute top-0 right-1/3 w-[1px] h-full bg-stone-900/10" />
       </div>
 
-      {/* 2. Primary Copywriting Canvas */}
-      <div className="relative z-20 max-w-5xl mx-auto px-6 text-center flex flex-col items-center justify-center flex-grow pt-10">
+      {/* 2. Primary Logo Canvas (Centered, Dominant, Pure Minimalism) */}
+      <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 flex-grow flex flex-col items-center justify-center py-10 gap-8">
         
-        {/* Brand Badge */}
+        {/* Centered Logo (Seamlessly Merged with Page Background) */}
         <motion.div
-          initial={{ opacity: 0, y: -15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex items-center gap-2.5 mb-6"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[620px] aspect-[5/4] overflow-hidden select-none"
         >
-          <span className="h-[1px] w-6 bg-[#D4AF37]" />
-          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#D4AF37] font-semibold">
-            Masters of Atmosphere &bull; Curated Environments
-          </span>
-          <span className="h-[1px] w-6 bg-[#D4AF37]" />
+          <img
+            src="/assets/logo_full.jpg"
+            alt="Haanav Eviors - Events & Interiors Logo"
+            className="w-full h-full object-cover filter brightness-[1.03]"
+            style={{
+              maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
+            }}
+          />
         </motion.div>
 
-        {/* 3. THE HOOK (Headline) */}
-        <motion.h2
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-4xl sm:text-6xl md:text-7xl font-serif font-light tracking-wide text-white leading-[1.12] mb-8 text-balance uppercase"
-        >
-          We Script the Transient. <br />
-          We Sculpt the <span className="font-serif italic font-normal text-[#D4AF37] tracking-normal">Permanent</span>.
-        </motion.h2>
-
-        {/* 4. THE SUB-HEADLINE */}
-        <motion.p
+        {/* Minimal Actions & Concept Link */}
+        <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-stone-300 dark:text-stone-300 font-sans text-sm md:text-base tracking-wide max-w-2xl font-light leading-relaxed mb-10 text-balance text-justify sm:text-center"
+          className="flex flex-col sm:flex-row sm:items-center justify-center gap-5 w-full sm:w-auto mt-4"
         >
-          Haanav Eviors composes the atmosphere of your realities—orchestrating high-profile luxury events that vanish in a single night, and curating permanent interior architectures that endure for generations.
-        </motion.p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button
+              variant="gold"
+              size="lg"
+              onClick={() => handleScrollToContact("Corporate Events")}
+              icon={<ArrowRight className="w-3.5 h-3.5" />}
+            >
+              Orchestrate An Event
+            </Button>
 
-        {/* 5. DUAL CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col sm:flex-row items-center gap-5 z-20 mb-8"
-        >
-          <Button
-            variant="gold"
-            size="lg"
-            onClick={() => handleScrollToContact("Corporate Events")}
-            icon={<ArrowRight className="w-3.5 h-3.5" />}
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-stone-800 text-white hover:border-[#D4AF37] bg-stone-950/20 backdrop-blur-sm"
+              onClick={() => handleScrollToContact("Residential Interiors")}
+            >
+              Commission A Space
+            </Button>
+          </div>
+
+          {/* Minimal concept link */}
+          <button
+            onClick={() => setIsConceptOpen(true)}
+            ref={revealButtonRef}
+            type="button"
+            className="flex items-center justify-center gap-1.5 text-[9px] uppercase tracking-widest text-stone-500 hover:text-[#D4AF37] font-semibold transition-all duration-300 cursor-pointer sm:ml-4 py-2"
           >
-            Orchestrate An Event
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-stone-750 text-white hover:border-[#D4AF37] bg-stone-950/20 backdrop-blur-sm"
-            onClick={() => handleScrollToContact("Residential Interiors")}
-          >
-            Commission A Space
-          </Button>
+            <HelpCircle className="w-3 h-3 text-[#D4AF37]" />
+            <span className="font-montserrat">Narrative Concept</span>
+          </button>
         </motion.div>
-
-        {/* Interactive Visual Narrative Reveal Link */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          whileHover={{ opacity: 0.8 }}
-          onClick={() => setIsConceptOpen(true)}
-          ref={revealButtonRef}
-          type="button"
-          className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-stone-400 hover:text-[#D4AF37] font-semibold transition-all duration-300 cursor-pointer mb-6"
-        >
-          <HelpCircle className="w-3 h-3 text-[#D4AF37]" />
-          <span>Reveal Visual Loop Narrative Concept</span>
-        </motion.button>
       </div>
 
-      {/* 6. TRUST STRIP (Minimalist Bottom Banner) */}
-      <div className="relative z-20 w-full border-t border-stone-900 bg-stone-950/65 backdrop-blur-md select-none py-6">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 divide-y sm:divide-y-0 md:divide-x divide-stone-900 text-center">
-          
-          <div className="flex flex-col items-center pt-2 sm:pt-0">
-            <span className="text-white font-serif text-lg font-light tracking-wide flex items-center gap-1.5 justify-center">
-              <Award className="w-3.5 h-3.5 text-[#D4AF37]" /> 150+
-            </span>
-            <span className="text-[9px] uppercase tracking-widest text-stone-500 font-semibold mt-1">
-              Fleeting Milestones
-            </span>
-          </div>
 
-          <div className="flex flex-col items-center pt-2 sm:pt-0">
-            <span className="text-white font-serif text-lg font-light tracking-wide flex items-center gap-1.5 justify-center">
-              <CheckCircle className="w-3.5 h-3.5 text-[#D4AF37]" /> 200+
-            </span>
-            <span className="text-[9px] uppercase tracking-widest text-stone-500 font-semibold mt-1">
-              Enduring Handovers
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center pt-2 sm:pt-0">
-            <span className="text-white font-serif text-lg font-light tracking-wide">
-              &euro;450M+
-            </span>
-            <span className="text-[9px] uppercase tracking-widest text-stone-500 font-semibold mt-1">
-              Combined Asset Valuation
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center pt-2 sm:pt-0">
-            <span className="text-[#D4AF37] font-serif text-lg font-medium">
-              98%
-            </span>
-            <span className="text-[9px] uppercase tracking-widest text-stone-500 font-semibold mt-1">
-              Patron Retention
-            </span>
-          </div>
-
-        </div>
-      </div>
-
-      {/* 7. VISUAL CONCEPT MODAL OVERLAY */}
+      {/* 4. VISUAL CONCEPT MODAL OVERLAY */}
       <AnimatePresence>
         {isConceptOpen && (
           <motion.div
@@ -246,23 +208,43 @@ export function Hero() {
               <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2">
                 Visual Identity Narrative Blueprint
               </span>
-              
-              <h4 id="visual-concept-title" className="font-serif text-2xl font-light uppercase text-white tracking-wide mb-6">
+
+              <h4
+                id="visual-concept-title"
+                className="font-serif text-2xl font-light uppercase text-white tracking-wide mb-6"
+              >
                 4K Cinematic Background Video Loop Concept
               </h4>
 
               <div className="space-y-4 font-sans text-xs leading-relaxed text-stone-300 text-justify">
                 <p>
-                  <strong>The Ambient Setting:</strong> The visual canvas opens inside a grand modern residential living room inspired by Andhra Pradesh heritage. Sunset streams through expansive glass panes, illuminating custom dark teakwood slates, hand-carved relief borders, and warm glowing brass samayalu lamps on stone platforms.
+                  <strong>The Ambient Setting:</strong> The visual canvas opens
+                  inside a grand modern residential living room inspired by
+                  Andhra Pradesh heritage. Sunset streams through expansive
+                  glass panes, illuminating custom dark teakwood slates,
+                  hand-carved relief borders, and warm glowing brass samayalu
+                  lamps on stone platforms.
                 </p>
                 <p>
-                  <strong>The Seamless Transition:</strong> As the camera glides forward over seamless polished stone, a thin golden archway wipes across the frame. Behind this passing boundary line, the residential sanctuary transforms into a grand open-air Telugu wedding mandapam under a star-swept sky.
+                  <strong>The Seamless Transition:</strong> As the camera glides
+                  forward over seamless polished stone, a thin golden archway
+                  wipes across the frame. Behind this passing boundary line, the
+                  residential sanctuary transforms into a grand open-air Telugu
+                  wedding mandapam under a star-swept sky.
                 </p>
                 <p>
-                  <strong>The Metamorphosis:</strong> The heritage teakwood panels dissolve into an majestic wall of fresh orange marigold and white jasmine flower garlands. The soft ambient room glow rises into dramatic, warm golden spotlight shafts centered around a brilliant, gold-carved temple-pillar wedding canopy.
+                  <strong>The Metamorphosis:</strong> The heritage teakwood
+                  panels dissolve into an majestic wall of fresh orange marigold
+                  and white jasmine flower garlands. The soft ambient room glow
+                  rises into dramatic, warm golden spotlight shafts centered
+                  around a brilliant, gold-carved temple-pillar wedding canopy.
                 </p>
                 <p>
-                  <strong>The Atmospheric Binder:</strong> The entire loop is bound together by a slow, suspended drift of golden dust particles and marigold petal fragments floating through the air—representing both the dust of high-tolerance craftsmanship and the sparkles of elite celebration.
+                  <strong>The Atmospheric Binder:</strong> The entire loop is
+                  bound together by a slow, suspended drift of golden dust
+                  particles and marigold petal fragments floating through the
+                  air—representing both the dust of high-tolerance craftsmanship
+                  and the sparkles of elite celebration.
                 </p>
               </div>
 
@@ -275,6 +257,148 @@ export function Hero() {
         )}
       </AnimatePresence>
 
+      {/* 3. BORDER TRANSITION LEAD-CAPTURE GATEWAY */}
+      <div className="relative w-full border-t border-stone-850/20 bg-gradient-to-b from-[#012712] to-stone-950 pt-10 pb-16 z-30 select-none">
+        
+        {/* Symmetrical Gold/Line Separator Accent */}
+        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/35 to-transparent flex items-center justify-center">
+          <div className="px-4 bg-[#012712] text-[#D4AF37] flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] font-medium font-montserrat">
+            <Sparkles className="w-3 h-3 text-[#D4AF37] animate-pulse" />
+            <span>Consultation Gateway</span>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 md:px-12 mt-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full bg-[#011c0c]/85 backdrop-blur-md border border-[#D4AF37]/25 rounded p-6 md:p-8 shadow-2xl relative overflow-hidden"
+          >
+            {/* Subtle internal light leak */}
+            <div className="absolute -right-24 -top-24 w-64 h-64 bg-[#D4AF37]/5 rounded-full filter blur-[50px] pointer-events-none" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+              
+              {/* Column 1: Descriptive text */}
+              <div className="lg:col-span-5 flex flex-col gap-2">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-semibold flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" />
+                  Reserve Private Consultation
+                </span>
+                <h4 className="font-serif text-lg md:text-xl font-light uppercase text-white tracking-wide">
+                  Coordinate Your <span className="font-serif italic font-normal text-[#D4AF37] tracking-normal">Vision</span>
+                </h4>
+                <p className="text-[11px] text-stone-400 font-sans tracking-wide leading-relaxed max-w-sm">
+                  Our spatial architects and event producers are ready to design your landmark celebration or luxury residential project. Request a quick callback below.
+                </p>
+              </div>
+
+              {/* Column 2: Lead Form */}
+              <div className="lg:col-span-7">
+                <form onSubmit={handleLeadSubmit} className="flex flex-col gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    
+                    {/* Name Input */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="name"
+                        value={leadForm.name}
+                        onChange={(e) => setLeadForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Your Name"
+                        required
+                        disabled={leadLoading}
+                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4AF37] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Contact Input */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="contact"
+                        value={leadForm.contact}
+                        onChange={(e) => setLeadForm(prev => ({ ...prev, contact: e.target.value }))}
+                        placeholder="Email or Phone"
+                        required
+                        disabled={leadLoading}
+                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4AF37] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Service Selection */}
+                    <div className="relative">
+                      <select
+                        name="service"
+                        value={leadForm.service}
+                        onChange={(e) => setLeadForm(prev => ({ ...prev, service: e.target.value }))}
+                        disabled={leadLoading}
+                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4AF37] text-stone-300 rounded px-3 py-2.5 text-xs font-sans transition-all focus:outline-none appearance-none cursor-pointer"
+                      >
+                        <option value="Corporate Events" className="bg-stone-950">Corporate Events</option>
+                        <option value="Bespoke Weddings" className="bg-stone-950">Bespoke Weddings</option>
+                        <option value="Residential Interiors" className="bg-stone-950">Residential Interiors</option>
+                        <option value="Commercial Interiors" className="bg-stone-950">Commercial Interiors</option>
+                      </select>
+                      {/* Custom dropdown arrow */}
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-stone-500">
+                        <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                        </svg>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Submission Row & Feedback */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-2">
+                    
+                    {/* Feedback Messages */}
+                    <div className="flex-grow">
+                      <AnimatePresence mode="wait">
+                        {leadStatus.type && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className={`flex items-center gap-2 text-[10px] tracking-wide font-sans ${
+                              leadStatus.type === "success" ? "text-emerald-400" : "text-amber-500"
+                            }`}
+                          >
+                            {leadStatus.type === "success" ? (
+                              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
+                            ) : (
+                              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                            )}
+                            <span>{leadStatus.message}</span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      variant="gold"
+                      size="sm"
+                      disabled={leadLoading}
+                      className="px-6 py-2.5 font-montserrat uppercase text-[9px] tracking-widest font-semibold flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      {leadLoading ? "Processing..." : "Submit Inquiry"}
+                    </Button>
+                    
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </motion.div>
+        </div>
+
+      </div>
     </section>
   );
 }

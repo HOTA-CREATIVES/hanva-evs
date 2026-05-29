@@ -1,94 +1,110 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Loader2 } from "lucide-react";
 import { Lightbox } from "@/components/ui/lightbox";
-
-interface PortfolioItem {
-  id: number;
-  src: string;
-  title: string;
-  category: string; // The specific filtering category
-  displayCategory: string; // User-facing clean category
-  desc: string;
-  size: "small" | "large" | "medium"; // Masonry-like size variations
-}
-
-const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  {
-    id: 1,
-    src: "/assets/portfolio_wedding.png",
-    category: "Weddings",
-    displayCategory: "Bespoke Weddings",
-    title: "The Orchid Sanctuary",
-    desc: "A cathedral wedding layout featuring suspended white orchids and warm scenographic lights.",
-    size: "large",
-  },
-  {
-    id: 2,
-    src: "/assets/portfolio_corporate.png",
-    category: "Corporate Events",
-    displayCategory: "Corporate Events",
-    title: "Vanguard Tech Reveal",
-    desc: "Minimalist volumetric stage design for a high-end electronic hardware launch.",
-    size: "medium",
-  },
-  {
-    id: 3,
-    src: "/assets/portfolio_interior_living.png",
-    category: "Residential",
-    displayCategory: "Residential Interiors",
-    title: "Casa di Marmo",
-    desc: "Luxury residential living room incorporating custom matte charcoal panels and brushed brass.",
-    size: "large",
-  },
-  {
-    id: 4,
-    src: "/assets/hero_bg.png",
-    category: "Commercial",
-    displayCategory: "Commercial Interiors",
-    title: "Terrazza del Lago",
-    desc: "A premium lakeside cocktail terrace showroom designed with high-end Italian architectural stone.",
-    size: "medium",
-  },
-  {
-    id: 5,
-    src: "/assets/about_bg.png",
-    category: "Luxury Interiors",
-    displayCategory: "Luxury Interiors",
-    title: "Studio Pietra",
-    desc: "Architectural workspace showcasing raw concrete texturing, warm oak slats, and floor-to-ceiling glass.",
-    size: "small",
-  },
-  {
-    id: 6,
-    src: "/assets/portfolio_interior_living.png",
-    category: "Luxury Interiors",
-    displayCategory: "Luxury Interiors",
-    title: "Aura Penthouse Suite",
-    desc: "High-end luxury suite detailing integrated shelf illumination and custom furniture layouts.",
-    size: "small",
-  },
-];
+import { getFirestorePortfolios } from "@/firebase/config";
+import type { PortfolioItem } from "@/firebase/config";
 
 const CATEGORIES = ["All", "Weddings", "Corporate Events", "Luxury Interiors", "Residential", "Commercial"];
+
+const DEFAULT_PORTFOLIOS: PortfolioItem[] = [
+  {
+    id: "portfolio-1",
+    rank: 1,
+    title: "The Orchid Sanctuary",
+    description: "A cathedral wedding layout featuring suspended white orchids and warm scenographic lights.",
+    img: "/assets/portfolio_wedding.png",
+    category: "Weddings",
+    tags: ["Bespoke Weddings", "large"]
+  },
+  {
+    id: "portfolio-2",
+    rank: 2,
+    title: "Vanguard Tech Reveal",
+    description: "Minimalist volumetric stage design for a high-end electronic hardware launch.",
+    img: "/assets/portfolio_corporate.png",
+    category: "Corporate Events",
+    tags: ["Corporate Events", "medium"]
+  },
+  {
+    id: "portfolio-3",
+    rank: 3,
+    title: "Casa di Marmo",
+    description: "Luxury residential living room incorporating custom matte charcoal panels and brushed brass.",
+    img: "/assets/portfolio_interior_living.png",
+    category: "Residential",
+    tags: ["Residential Interiors", "large"]
+  },
+  {
+    id: "portfolio-4",
+    rank: 4,
+    title: "Terrazza del Lago",
+    description: "A premium lakeside cocktail terrace showroom designed with high-end Italian architectural stone.",
+    img: "/assets/hero_bg.png",
+    category: "Commercial",
+    tags: ["Commercial Interiors", "medium"]
+  },
+  {
+    id: "portfolio-5",
+    rank: 5,
+    title: "Studio Pietra",
+    description: "Architectural workspace showcasing raw concrete texturing, warm oak slats, and floor-to-ceiling glass.",
+    img: "/assets/about_bg.png",
+    category: "Luxury Interiors",
+    tags: ["Luxury Interiors", "small"]
+  },
+  {
+    id: "portfolio-6",
+    rank: 6,
+    title: "Aura Penthouse Suite",
+    description: "High-end luxury suite detailing integrated shelf illumination and custom furniture layouts.",
+    img: "/assets/portfolio_interior_living.png",
+    category: "Luxury Interiors",
+    tags: ["Luxury Interiors", "small"]
+  }
+];
 
 export function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getFirestorePortfolios();
+        if (data && data.length > 0) {
+          setPortfolioItems(data);
+        } else {
+          setPortfolioItems(DEFAULT_PORTFOLIOS);
+        }
+      } catch (error) {
+        console.error("Failed to load portfolios from Firestore, using offline fallback:", error);
+        setPortfolioItems(DEFAULT_PORTFOLIOS);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
   // Filter logic
-  const filteredItems = PORTFOLIO_ITEMS.filter((item) => {
+  const filteredItems = portfolioItems.filter((item) => {
     if (selectedCategory === "All") return true;
     return item.category === selectedCategory;
   });
 
   // Prepare images for Lightbox
-  const lightboxImages = filteredItems.map((item) => ({
-    src: item.src,
-    title: item.title,
-    category: item.displayCategory,
-  }));
+  const lightboxImages = filteredItems.map((item) => {
+    const displayCategory = item.tags && item.tags[0] ? item.tags[0] : item.category;
+    return {
+      src: item.img,
+      title: item.title,
+      category: displayCategory,
+    };
+  });
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -134,78 +150,90 @@ export function Portfolio() {
         </div>
 
         {/* Portfolio Masonry Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, index) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                key={item.id}
-                onClick={() => openLightbox(index)}
-                className={`group relative overflow-hidden bg-stone-900 border border-stone-900/60 cursor-zoom-in rounded ${
-                  item.size === "large"
-                    ? "md:row-span-2 md:h-[620px]"
-                    : item.size === "medium"
-                    ? "md:h-[400px]"
-                    : "md:h-[300px]"
-                } h-[320px]`}
-              >
-                {/* Portfolio Image */}
-                <img
-                  src={item.src}
-                  alt={item.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover filter brightness-[0.7] group-hover:brightness-[0.4] group-hover:scale-105 transition-all duration-[800ms] ease-out"
-                />
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4 text-stone-500">
+            <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
+            <span className="text-xs uppercase tracking-widest font-sans font-light">Loading Portfolios...</span>
+          </div>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredItems.map((item, index) => {
+                const displayCategory = item.tags && item.tags[0] ? item.tags[0] : item.category;
+                const size = item.tags && item.tags[1] ? item.tags[1] : "medium";
 
-                {/* Glassmorphic Gradient Overlay details */}
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+                return (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    key={item.id}
+                    onClick={() => openLightbox(index)}
+                    className={`group relative overflow-hidden bg-stone-900 border border-stone-900/60 cursor-zoom-in rounded ${
+                      size === "large"
+                        ? "md:row-span-2 md:h-[620px]"
+                        : size === "medium"
+                        ? "md:h-[400px]"
+                        : "md:h-[300px]"
+                    } h-[320px]`}
+                  >
+                    {/* Portfolio Image */}
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover filter brightness-[0.7] group-hover:brightness-[0.4] group-hover:scale-105 transition-all duration-[800ms] ease-out"
+                    />
 
-                {/* High-end Hover Details */}
-                <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 select-none">
-                  {/* Category Accent */}
-                  <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">
-                    {item.displayCategory}
-                  </span>
-                  
-                  {/* Title */}
-                  <h4 className="font-serif text-xl font-light text-white uppercase mb-2 tracking-wide">
-                    {item.title}
-                  </h4>
-                  
-                  {/* Description */}
-                  <p className="text-[11px] text-stone-300 font-sans tracking-wide leading-relaxed mb-6 line-clamp-2 max-w-sm">
-                    {item.desc}
-                  </p>
+                    {/* Glassmorphic Gradient Overlay details */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
 
-                  {/* Zoom Action Icon */}
-                  <div className="flex items-center gap-2 text-[9px] uppercase tracking-widest text-white/80 font-bold">
-                    <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                    <span>View Project</span>
-                  </div>
-                </div>
+                    {/* High-end Hover Details */}
+                    <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 select-none">
+                      {/* Category Accent */}
+                      <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">
+                        {displayCategory}
+                      </span>
+                      
+                      {/* Title */}
+                      <h4 className="font-serif text-xl font-light text-white uppercase mb-2 tracking-wide">
+                        {item.title}
+                      </h4>
+                      
+                      {/* Description */}
+                      <p className="text-[11px] text-stone-300 font-sans tracking-wide leading-relaxed mb-6 line-clamp-2 max-w-sm">
+                        {item.description}
+                      </p>
 
-                {/* Sub-card minimal branding (visible in default state) */}
-                <div className="absolute bottom-0 inset-x-0 p-6 flex justify-between items-end bg-gradient-to-t from-black/80 to-transparent group-hover:hidden transition-all duration-300">
-                  <div>
-                    <span className="text-[9px] uppercase tracking-widest text-[#D4AF37]/80 font-medium">
-                      {item.displayCategory}
-                    </span>
-                    <h5 className="font-sans text-xs font-semibold text-white tracking-wide uppercase mt-1">
-                      {item.title}
-                    </h5>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                      {/* Zoom Action Icon */}
+                      <div className="flex items-center gap-2 text-[9px] uppercase tracking-widest text-white/80 font-bold">
+                        <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span>View Project</span>
+                      </div>
+                    </div>
+
+                    {/* Sub-card minimal branding (visible in default state) */}
+                    <div className="absolute bottom-0 inset-x-0 p-6 flex justify-between items-end bg-gradient-to-t from-black/80 to-transparent group-hover:hidden transition-all duration-300">
+                      <div>
+                        <span className="text-[9px] uppercase tracking-widest text-[#D4AF37]/80 font-medium">
+                          {displayCategory}
+                        </span>
+                        <h5 className="font-sans text-xs font-semibold text-white tracking-wide uppercase mt-1">
+                          {item.title}
+                        </h5>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
 
       {/* Lightbox Trigger Hook */}

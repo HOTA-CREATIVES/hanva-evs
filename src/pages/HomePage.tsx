@@ -1,7 +1,6 @@
 import { MainLayout } from "@/layouts/MainLayout";
 import { LoadingScreen } from "@/sections/LoadingScreen";
 import { Hero } from "@/sections/Hero";
-import { Stats } from "@/sections/Stats";
 import { Services } from "@/sections/Services";
 import { Portfolio } from "@/sections/Portfolio";
 import { About } from "@/sections/About";
@@ -20,7 +19,6 @@ export function HomePage() {
       {/* Primary visual sections layout */}
       <MainLayout>
         <Hero />
-        <Stats />
         <Services />
         <Portfolio />
         <About />

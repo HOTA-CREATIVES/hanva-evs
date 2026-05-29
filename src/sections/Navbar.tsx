@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
-import { useDarkTheme } from "@/hooks/useDarkTheme";
+import { Menu, X } from "lucide-react";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
@@ -18,7 +17,6 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { toggleTheme, isDark } = useDarkTheme();
   const scrollDirection = useScrollDirection();
   const scrollProgress = useScrollProgress();
   const location = useLocation();
@@ -111,17 +109,8 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Controls: Theme & Mobile Toggle */}
+          {/* Controls: Mobile Toggle */}
           <div className="flex items-center gap-4">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 text-stone-400 hover:text-white dark:text-stone-400 dark:hover:text-white rounded-full bg-stone-900/40 hover:bg-stone-900/80 border border-stone-800/40 transition-all cursor-pointer"
-              aria-label="Toggle theme mode"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-[#D4AF37]" /> : <Moon className="w-4 h-4" />}
-            </button>
-
             {/* Mobile Menu Icon */}
             <button
               onClick={() => setIsOpen(!isOpen)}

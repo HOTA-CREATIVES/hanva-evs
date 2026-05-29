@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, Trash2, ArrowLeft, Database, HardDrive, RefreshCw } from "lucide-react";
 import { MainLayout } from "@/layouts/MainLayout";
-import { getLocalInquiries } from "@/firebase/config";
+import { getFirestoreInquiries, deleteFirestoreInquiry, clearAllFirestoreInquiries } from "@/firebase/config";
 import type { InquiryData } from "@/firebase/config";
 import { Button } from "@/components/ui/button";
 
@@ -10,11 +10,9 @@ export function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState<InquiryData[]>([]);
   const navigate = useNavigate();
 
-  // Load inquiries from localStorage initially
-  const loadLeads = () => {
-    const data = getLocalInquiries();
-    // Sort by timestamp descending
-    data.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  // Load inquiries from Firestore initially
+  const loadLeads = async () => {
+    const data = await getFirestoreInquiries();
     setInquiries(data);
   };
 
@@ -49,40 +47,30 @@ export function AdminInquiriesPage() {
     document.body.removeChild(link);
   };
 
-  // Clear single item
-  const handleDeleteItem = (indexToDelete: number) => {
+  // Clear single item from Firestore
+  const handleDeleteItem = async (id?: string) => {
+    if (!id) return;
     try {
-      const existingStr = localStorage.getItem("haanav_eviors_inquiries");
-      if (existingStr) {
-        const existing = JSON.parse(existingStr);
-        // We need to reverse order matches because the screen shows descending sort
-        // Find index matching in original array
-        const sortedInquiries = [...inquiries];
-        const targetItem = sortedInquiries[indexToDelete];
-        
-        const originalIndex = existing.findIndex(
-          (item: any) =>
-            item.timestamp === targetItem.timestamp &&
-            item.name === targetItem.name &&
-            item.email === targetItem.email
-        );
-
-        if (originalIndex !== -1) {
-          existing.splice(originalIndex, 1);
-          localStorage.setItem("haanav_eviors_inquiries", JSON.stringify(existing));
-          loadLeads();
-        }
+      const success = await deleteFirestoreInquiry(id);
+      if (success) {
+        loadLeads();
+      } else {
+        alert("Failed to delete lead from Firestore.");
       }
     } catch (err) {
-      console.error("Failed to delete local lead:", err);
+      console.error("Failed to delete Firestore lead:", err);
     }
   };
 
-  // Clear all inquiries
-  const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to clear all local lead inquiries? This action is irreversible.")) {
-      localStorage.removeItem("haanav_eviors_inquiries");
-      setInquiries([]);
+  // Clear all inquiries from Firestore
+  const handleClearAll = async () => {
+    if (window.confirm("Are you sure you want to clear all lead inquiries from Firestore? This action is irreversible.")) {
+      const success = await clearAllFirestoreInquiries();
+      if (success) {
+        setInquiries([]);
+      } else {
+        alert("Failed to clear inquiries from Firestore.");
+      }
     }
   };
 
@@ -171,14 +159,14 @@ export function AdminInquiriesPage() {
 
             <div className="p-6 border border-stone-900 bg-stone-950/40 rounded text-left">
               <span className="text-[9px] uppercase tracking-widest text-stone-500 font-semibold">
-                Local Vault Backups
+                Cloud Vault Backups
               </span>
               <div className="flex items-center gap-2 mt-2 mb-1.5 text-xs text-[#D4AF37] font-semibold">
                 <HardDrive className="w-4 h-4" />
-                <span>Active</span>
+                <span>Operational</span>
               </div>
               <p className="text-[10px] text-stone-500 font-sans">
-                Immutable LocalStorage cache is operational.
+                Secure real-time cloud sync is operational.
               </p>
             </div>
           </div>
@@ -234,7 +222,7 @@ export function AdminInquiriesPage() {
                         </td>
                         <td className="p-5 text-center">
                           <button
-                            onClick={() => handleDeleteItem(index)}
+                            onClick={() => handleDeleteItem(item.id)}
                             className="p-2 border border-stone-900 text-stone-500 hover:text-red-400 hover:border-red-950/40 rounded transition-all cursor-pointer bg-transparent"
                             title="Delete Lead"
                           >

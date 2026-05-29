@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin-inquiries
+
+Sitemap: https://haanaveviors.com/sitemap.xml
