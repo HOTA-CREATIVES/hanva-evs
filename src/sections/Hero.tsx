@@ -1,17 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, HelpCircle, X, Award, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Background visual cross-fade loops between Event Setup & Interior Space
+const backgrounds = [
+  "/assets/hero_telugu_wedding.png", // Grand Telugu Mandapam Ceremony, Andhra Pradesh
+  "/assets/hero_andhra_interior.png", // Royal Andhra Teakwood Heritage Interior
+];
 
 export function Hero() {
   const [isConceptOpen, setIsConceptOpen] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
 
-  // Background visual cross-fade loops between Event Setup & Interior Space (Indian & Andhra Heritage)
-  const backgrounds = [
-    "/assets/hero_telugu_wedding.png", // Grand Telugu Mandapam Ceremony, Andhra Pradesh
-    "/assets/hero_andhra_interior.png", // Royal Andhra Teakwood Heritage Interior
-  ];
+  const revealButtonRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +22,26 @@ export function Hero() {
     }, 8000); // 8-second slow transition loop
     return () => clearInterval(interval);
   }, []);
+
+  // Close on Escape and restore focus
+  useEffect(() => {
+    if (!isConceptOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsConceptOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isConceptOpen]);
+
+  // Focus management: focus dialog close button when opened, restore to opener when closed
+  useEffect(() => {
+    if (isConceptOpen) {
+      // give modal a tick to render
+      setTimeout(() => closeButtonRef.current?.focus());
+    } else {
+      setTimeout(() => revealButtonRef.current?.focus());
+    }
+  }, [isConceptOpen]);
 
   const handleScrollToContact = (serviceCategory: "Corporate Events" | "Residential Interiors") => {
     const contactSection = document.getElementById("contact");
@@ -29,6 +52,8 @@ export function Hero() {
       const selectElement = document.getElementById("service-select") as HTMLSelectElement;
       if (selectElement) {
         selectElement.value = serviceCategory;
+        // dispatch change so React/non-controlled listeners pick it up
+        selectElement.dispatchEvent(new Event('change', { bubbles: true }));
       }
     }
   };
@@ -44,9 +69,9 @@ export function Hero() {
           <motion.img
             key={bgIndex}
             src={backgrounds[bgIndex]}
-            alt="Masters of Atmosphere Showcase"
+            alt=""
             initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 0.52, scale: 1 }}
+            animate={{ opacity: 1.0, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.2, ease: "easeInOut" }}
             className="absolute inset-0 w-full h-full object-cover object-center filter contrast-[1.05]"
@@ -134,6 +159,8 @@ export function Hero() {
           animate={{ opacity: 0.5 }}
           whileHover={{ opacity: 0.8 }}
           onClick={() => setIsConceptOpen(true)}
+          ref={revealButtonRef}
+          type="button"
           className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-stone-400 hover:text-[#D4AF37] font-semibold transition-all duration-300 cursor-pointer mb-6"
         >
           <HelpCircle className="w-3 h-3 text-[#D4AF37]" />
@@ -192,6 +219,9 @@ export function Hero() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsConceptOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="visual-concept-title"
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 cursor-pointer"
           >
             <motion.div
@@ -200,10 +230,14 @@ export function Hero() {
               exit={{ scale: 0.95, y: 15 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-stone-900 border border-stone-800 p-8 md:p-10 rounded max-w-2xl shadow-2xl cursor-default relative text-left"
+              tabIndex={-1}
             >
               {/* Close Button */}
               <button
                 onClick={() => setIsConceptOpen(false)}
+                ref={closeButtonRef}
+                type="button"
+                aria-label="Close visual concept"
                 className="absolute top-4 right-4 p-2 text-stone-500 hover:text-white rounded-full bg-stone-950 border border-stone-900 cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -213,7 +247,7 @@ export function Hero() {
                 Visual Identity Narrative Blueprint
               </span>
               
-              <h4 className="font-serif text-2xl font-light uppercase text-white tracking-wide mb-6">
+              <h4 id="visual-concept-title" className="font-serif text-2xl font-light uppercase text-white tracking-wide mb-6">
                 4K Cinematic Background Video Loop Concept
               </h4>
 
