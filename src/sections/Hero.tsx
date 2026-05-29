@@ -102,27 +102,10 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-[#012712] pt-28"
+      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-[#021A0D] pt-28"
     >
 
-      {/* Fine-Lined Architectural Accents */}
-      <div className="absolute inset-10 border border-stone-800/10 pointer-events-none z-10 hidden md:block">
-        <div className="absolute top-0 left-1/3 w-[1px] h-full bg-stone-900/10" />
-        <div className="absolute top-0 right-1/3 w-[1px] h-full bg-stone-900/10" />
-      </div>
-
-      {/* A. LEFT FULL-HEIGHT SIDE PANEL (Bespoke Celebrations - Desktop only) */}
-      <div className="absolute left-0 top-0 bottom-0 w-[30%] xl:w-[32%] z-10 hidden lg:block select-none overflow-hidden border-r border-[#D4AF37]/15">
-        <img
-          src="/assets/hero_left.jpg"
-          alt="Haanav Eviors Bespoke Event Celebrations"
-          className="w-full h-full object-cover"
-        />
-        {/* Subtle corner metadata tag */}
-        <div className="absolute bottom-6 left-6 z-20 bg-stone-950/65 backdrop-blur-md px-3 py-1.5 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
-          Bespoke Celebrations
-        </div>
-      </div>
+      {/* Fine-Lined Architectural Accents removed for clean, borderless appearance */}
 
       {/* B. CENTER CANVASES AREA (Brand Identity and Symmetrical Action block) */}
       <div className="relative z-20 max-w-xl mx-auto px-6 flex-grow flex flex-col items-center justify-center py-10 gap-6 text-center w-full">
@@ -132,57 +115,18 @@ export function Hero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[420px] aspect-[5/4] overflow-hidden select-none"
+          className="relative w-full max-w-[700px] aspect-[5/4] overflow-hidden select-none"
         >
           <img
             src="/assets/logo_full.jpg"
             alt="Haanav Eviors - Events & Interiors Logo"
             className="w-full h-full object-cover filter brightness-[1.03]"
             style={{
-              maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
-              WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)",
+              maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
             }}
           />
         </motion.div>
-
-        {/* Mobile/Tablet Side-by-Side Dual Portfolio Preview Grid (Hidden on Desktop) */}
-        <div className="grid grid-cols-2 gap-4 w-full max-w-[500px] lg:hidden mt-2">
-          
-          {/* Event preview card (mobile) */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1 }}
-            className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
-          >
-            <img
-              src="/assets/hero_left.jpg"
-              alt="Bespoke Celebrations"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
-              Bespoke Celebrations
-            </div>
-          </motion.div>
-
-          {/* Interior preview card (mobile) */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="w-full aspect-[4/5] overflow-hidden rounded border border-[#D4AF37]/20 shadow-lg relative"
-          >
-            <img
-              src="/assets/hero_right.jpg"
-              alt="Bespoke Interiors"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-stone-950/80 backdrop-blur-[2px] py-2 text-center text-[7px] uppercase tracking-[0.15em] font-semibold text-[#D4AF37]">
-              Sanctuary Designs
-            </div>
-          </motion.div>
-
-        </div>
 
         {/* Action buttons Block (Symmetrical Fit) */}
         <motion.div
@@ -222,19 +166,6 @@ export function Hero() {
           </button>
         </motion.div>
 
-      </div>
-
-      {/* C. RIGHT FULL-HEIGHT SIDE PANEL (Sanctuary Designs - Desktop only) */}
-      <div className="absolute right-0 top-0 bottom-0 w-[30%] xl:w-[32%] z-10 hidden lg:block select-none overflow-hidden border-l border-[#D4AF37]/15">
-        <img
-          src="/assets/hero_right.jpg"
-          alt="Haanav Eviors Bespoke Interior Living Sanctuary"
-          className="w-full h-full object-cover"
-        />
-        {/* Subtle corner metadata tag */}
-        <div className="absolute bottom-6 right-6 z-20 bg-stone-950/65 backdrop-blur-md px-3 py-1.5 rounded border border-stone-850 text-[8px] uppercase tracking-[0.2em] font-semibold text-[#D4AF37] font-montserrat select-none">
-          Featured Sanctuary Design
-        </div>
       </div>
 
 
@@ -323,11 +254,11 @@ export function Hero() {
       </AnimatePresence>
 
       {/* 3. BORDER TRANSITION LEAD-CAPTURE GATEWAY */}
-      <div className="relative w-full border-t border-stone-850/20 bg-gradient-to-b from-[#012712] to-stone-950 pt-10 pb-16 z-30 select-none">
+      <div className="relative w-full border-t border-stone-850/20 bg-gradient-to-b from-[#021A0D] to-stone-950 pt-10 pb-16 z-30 select-none">
         
         {/* Symmetrical Gold/Line Separator Accent */}
         <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/35 to-transparent flex items-center justify-center">
-          <div className="px-4 bg-[#012712] text-[#D4AF37] flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] font-medium font-montserrat">
+          <div className="px-4 bg-[#021A0D] text-[#D4AF37] flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] font-medium font-montserrat">
             <Sparkles className="w-3 h-3 text-[#D4AF37] animate-pulse" />
             <span>Consultation Gateway</span>
           </div>
