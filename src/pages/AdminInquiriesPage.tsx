@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, Trash2, ArrowLeft, Database, HardDrive, RefreshCw } from "lucide-react";
-import { MainLayout } from "@/layouts/MainLayout";
 import { getFirestoreInquiries, deleteFirestoreInquiry, clearAllFirestoreInquiries } from "@/firebase/config";
 import type { InquiryData } from "@/firebase/config";
 import { Button } from "@/components/ui/button";
@@ -75,7 +74,7 @@ export function AdminInquiriesPage() {
   };
 
   return (
-    <MainLayout>
+    <>
       <div className="min-h-screen bg-stone-950 pt-32 pb-24 text-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
@@ -239,7 +238,7 @@ export function AdminInquiriesPage() {
 
         </div>
       </div>
-    </MainLayout>
+    </>
   );
 }
 export default AdminInquiriesPage;
