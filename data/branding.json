@@ -1,0 +1,46 @@
+{
+  "company": {
+    "name": "Haanav Eviors",
+    "tagline": "Designing Spaces. Creating Experiences.",
+    "slogan": "We Design experiences . You live them.",
+    "about": "Boutique Studio specializing in luxury transient events and permanent interior architecture.",
+    "location": {
+      "city": "Bhimavaram",
+      "state": "Andhra Pradesh",
+      "country": "India",
+      "address": "Bhimavaram, Andhra Pradesh, India"
+    },
+    "contacts": {
+      "phone": "+91 81791 14167",
+      "phoneRaw": "8179114167",
+      "email": "haanaveviors@gmail.com",
+      "whatsapp": "https://wa.me/918179114167?text=Hello%20Haanav%20Eviors%20Concierge%2C%20I%20would%20like%20to%20inquire%20about..."
+    }
+  },
+  "designSystem": {
+    "colors": {
+      "primary": "Olive Green",
+      "secondary": "Deep Forest Green",
+      "backgrounds": "Warm Ivory / Off-White",
+      "accents": "Soft Beige, Muted Gold Highlights, Light Stone Gray, Charcoal Text"
+    },
+    "typography": {
+      "headings": "Serif (Playfair Display, Cormorant Garamond, DM Serif Display)",
+      "body": "Sans-Serif (Inter, Manrope, Plus Jakarta Sans)"
+    }
+  },
+  "services": {
+    "events": [
+      "Bespoke Weddings",
+      "Corporate Events",
+      "Birthday Celebrations",
+      "Private Gatherings"
+    ],
+    "interiors": [
+      "Residential Interiors",
+      "Commercial Interiors",
+      "Renovation Projects",
+      "Custom Design Solutions"
+    ]
+  }
+}
