@@ -255,8 +255,8 @@ export async function seedCollectionsIfEmpty(): Promise<void> {
         {
           id: "portfolio-1",
           rank: 1,
-          title: "The Orchid Sanctuary",
-          description: "A cathedral wedding layout featuring suspended white orchids and warm scenographic lights.",
+          title: "Heritage Wedding Canopy",
+          description: "A majestic open-air Telugu wedding canopy featuring hand-woven marigold grids, suspended brass bells, and a warm golden sunset backdrop.",
           img: "/assets/portfolio_wedding.png",
           category: "Weddings",
           tags: ["Bespoke Weddings", "large"]
@@ -264,45 +264,45 @@ export async function seedCollectionsIfEmpty(): Promise<void> {
         {
           id: "portfolio-2",
           rank: 2,
-          title: "Vanguard Tech Reveal",
-          description: "Minimalist volumetric stage design for a high-end electronic hardware launch.",
-          img: "/assets/portfolio_corporate.png",
-          category: "Corporate Events",
-          tags: ["Corporate Events", "medium"]
-        },
-        {
-          id: "portfolio-3",
-          rank: 3,
-          title: "Casa di Marmo",
-          description: "Luxury residential living room incorporating custom matte charcoal panels and brushed brass.",
+          title: "Andhra Teakwood Lounge",
+          description: "A custom residential drawing room showcasing solid Andhra teakwood panelling, hand-polished brass accents, and low-profile linen seating.",
           img: "/assets/portfolio_interior_living.png",
           category: "Residential",
           tags: ["Residential Interiors", "large"]
         },
         {
+          id: "portfolio-3",
+          rank: 3,
+          title: "Executive Launch Stage",
+          description: "An editorial corporate stage layout utilizing volumetric concrete geometry, warm scenic spotlights, and a seamless widescreen backdrop.",
+          img: "/assets/portfolio_corporate.png",
+          category: "Corporate Events",
+          tags: ["Corporate Events", "medium"]
+        },
+        {
           id: "portfolio-4",
           rank: 4,
-          title: "Terrazza del Lago",
-          description: "A premium lakeside cocktail terrace showroom designed with high-end Italian architectural stone.",
-          img: "/assets/hero_bg.png",
-          category: "Commercial",
-          tags: ["Commercial Interiors", "medium"]
+          title: "Minimalist Penthouse",
+          description: "A high-rise luxury residence detailing fluted wall dividers, integrated ceiling lighting lanes, and custom bouclé-upholstered armchairs.",
+          img: "/assets/hero_right_interiors.png",
+          category: "Residential",
+          tags: ["Residential Interiors", "medium"]
         },
         {
           id: "portfolio-5",
           rank: 5,
-          title: "Studio Pietra",
-          description: "Architectural workspace showcasing raw concrete texturing, warm oak slats, and floor-to-ceiling glass.",
-          img: "/assets/about_bg.png",
-          category: "Luxury Interiors",
-          tags: ["Luxury Interiors", "small"]
+          title: "The Orchid Sanctuary",
+          description: "An immersive indoor ceremony setup featuring suspended white orchid chandeliers and a mirror-finish ivory aisle.",
+          img: "/assets/hero_telugu_wedding.png",
+          category: "Weddings",
+          tags: ["Bespoke Weddings", "small"]
         },
         {
           id: "portfolio-6",
           rank: 6,
-          title: "Aura Penthouse Suite",
-          description: "High-end luxury suite detailing integrated shelf illumination and custom furniture layouts.",
-          img: "/assets/portfolio_interior_living.png",
+          title: "Studio Pietra",
+          description: "An architectural studio workspace showcasing raw concrete texturing, warm oak slats, and floor-to-ceiling glass paneling.",
+          img: "/assets/about_bg.png",
           category: "Luxury Interiors",
           tags: ["Luxury Interiors", "small"]
         }

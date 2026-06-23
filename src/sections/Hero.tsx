@@ -4,7 +4,11 @@ import { ArrowRight, HelpCircle, X, Calendar, CheckCircle2, AlertCircle, Sparkle
 import { Button } from "@/components/ui/button";
 import { submitInquiry } from "@/firebase/config";
 
-export function Hero() {
+interface HeroProps {
+  onExplorePortfolio?: (tab: "events" | "interiors") => void;
+}
+
+export function Hero({ onExplorePortfolio }: HeroProps) {
   const [hoveredSide, setHoveredSide] = useState<"left" | "right" | null>(null);
   const [mobileActiveTab, setMobileActiveTab] = useState<"left" | "right">("left");
   const [isConceptOpen, setIsConceptOpen] = useState(false);
@@ -154,6 +158,15 @@ export function Hero() {
                 size="sm"
                 className="pointer-events-auto border-[#D4AF37]/35 text-white hover:border-[#D4AF37]"
                 icon={<ArrowRight className="w-3.5 h-3.5" />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onExplorePortfolio) {
+                    onExplorePortfolio("events");
+                  } else {
+                    const el = document.getElementById("about");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
               >
                 Explore Events Portfolio
               </Button>
@@ -212,6 +225,15 @@ export function Hero() {
                 size="sm"
                 className="pointer-events-auto border-[#D4AF37]/35 text-white hover:border-[#D4AF37]"
                 icon={<ArrowRight className="w-3.5 h-3.5" />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onExplorePortfolio) {
+                    onExplorePortfolio("interiors");
+                  } else {
+                    const el = document.getElementById("about");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
               >
                 Explore Interiors Portfolio
               </Button>
