@@ -79,16 +79,16 @@ export function Footer() {
             <div className="flex flex-col gap-3">
               <div className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-[#D4A256] mt-0.5 flex-shrink-0" />
-                <span>Andhra Pradesh Heritage Circle, Road No. 4, Hyderabad, IN</span>
+                <span>Bhimavaram, Andhra Pradesh, India</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#D4A256] flex-shrink-0" />
-                <span>+91 90000 12345</span>
+                <span>+91 81791 14167</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#D4A256] flex-shrink-0" />
-                <a href="mailto:concierge@hanavevs.com" className="hover:underline text-stone-400 hover:text-[#D4A256]">
-                  concierge@hanavevs.com
+                <a href="mailto:haanaveviors@gmail.com" className="hover:underline text-stone-400 hover:text-[#D4A256]">
+                  haanaveviors@gmail.com
                 </a>
               </div>
             </div>

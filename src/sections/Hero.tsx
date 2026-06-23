@@ -42,7 +42,7 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
     try {
       const result = await submitInquiry({
         name: leadForm.name,
-        email: leadForm.contact.includes("@") ? leadForm.contact : "quick-lead@hanavevs.com",
+        email: leadForm.contact.includes("@") ? leadForm.contact : "haanaveviors@gmail.com",
         phone: !leadForm.contact.includes("@") ? leadForm.contact : "0000000000",
         service: leadForm.service,
         message: `Quick Callback Inquiry from Redesigned Split Hero.`,
@@ -79,23 +79,7 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
     }
   }, [isConceptOpen]);
 
-  const handleScrollToContact = (
-    serviceCategory: "Corporate Events" | "Residential Interiors" | "Bespoke Weddings" | "Commercial Interiors",
-  ) => {
-    const contactSection = document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
 
-      // Auto-set the dropdown value in form
-      const selectElement = document.getElementById(
-        "service-select",
-      ) as HTMLSelectElement;
-      if (selectElement) {
-        selectElement.value = serviceCategory;
-        selectElement.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    }
-  };
 
   return (
     <section
@@ -116,7 +100,14 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
           }}
           transition={{ type: "spring", stiffness: 120, damping: 20 }}
           className="relative h-full overflow-hidden cursor-pointer"
-          onClick={() => handleScrollToContact("Corporate Events")}
+          onClick={() => {
+            if (onExplorePortfolio) {
+              onExplorePortfolio("events");
+            } else {
+              const el = document.getElementById("about");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
         >
           {/* Background Image with Ken Burns zoom */}
           <motion.div
@@ -183,7 +174,14 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
           }}
           transition={{ type: "spring", stiffness: 120, damping: 20 }}
           className="relative h-full overflow-hidden cursor-pointer"
-          onClick={() => handleScrollToContact("Residential Interiors")}
+          onClick={() => {
+            if (onExplorePortfolio) {
+              onExplorePortfolio("interiors");
+            } else {
+              const el = document.getElementById("about");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
         >
           {/* Background Image with Ken Burns zoom */}
           <motion.div
@@ -355,10 +353,17 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
                 <Button
                   variant="gold"
                   size="sm"
-                  onClick={() => handleScrollToContact("Corporate Events")}
+                  onClick={() => {
+                    if (onExplorePortfolio) {
+                      onExplorePortfolio("events");
+                    } else {
+                      const el = document.getElementById("about");
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   icon={<ArrowRight className="w-3.5 h-3.5" />}
                 >
-                  Orchestrate An Event
+                  Explore Events Portfolio
                 </Button>
               </motion.div>
             ) : (
@@ -382,10 +387,17 @@ export function Hero({ onExplorePortfolio }: HeroProps) {
                 <Button
                   variant="gold"
                   size="sm"
-                  onClick={() => handleScrollToContact("Residential Interiors")}
+                  onClick={() => {
+                    if (onExplorePortfolio) {
+                      onExplorePortfolio("interiors");
+                    } else {
+                      const el = document.getElementById("about");
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
                   icon={<ArrowRight className="w-3.5 h-3.5" />}
                 >
-                  Commission A Space
+                  Explore Interiors Portfolio
                 </Button>
               </motion.div>
             )}

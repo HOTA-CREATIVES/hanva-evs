@@ -127,7 +127,7 @@ export function ContactPage() {
                 <MapPin className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
                 <div>
                   <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Studio Address</span>
-                  <span>Andhra Pradesh Heritage Circle, Road No. 4, Hyderabad, IN</span>
+                  <span>Bhimavaram, Andhra Pradesh, India</span>
                 </div>
               </div>
 
@@ -135,7 +135,7 @@ export function ContactPage() {
                 <Phone className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
                 <div>
                   <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Direct Call</span>
-                  <span>+91 90000 12345</span>
+                  <span>+91 81791 14167</span>
                 </div>
               </div>
 
@@ -143,7 +143,7 @@ export function ContactPage() {
                 <Mail className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
                 <div>
                   <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Email Inquiries</span>
-                  <span>concierge@hanavevs.com</span>
+                  <span>haanaveviors@gmail.com</span>
                 </div>
               </div>
 
@@ -224,7 +224,7 @@ export function ContactPage() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. +91 90000 12345"
+                      placeholder="e.g. +91 81791 14167"
                       disabled={loading}
                       value={form.phone}
                       onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
