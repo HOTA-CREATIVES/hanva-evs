@@ -1,361 +1,361 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Phone, Mail, MapPin, Clock, Calendar, CheckCircle2, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { submitInquiry } from "@/firebase/config";
+import { Phone, Mail, MapPin, Sparkles, Send, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import branding from "../../data/branding.json";
+import { db, isMock, mockDb, appsScriptUrl } from "../firebase/config";
+import { collection, addDoc } from "firebase/firestore";
+
+interface MoodboardData {
+  serviceType: string;
+  style: string;
+  materials: string;
+  lighting: string;
+}
 
 export function ContactPage() {
-  const navigate = useNavigate();
-
-  // Scroll to top on page mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  // Detailed client form state
-  const [form, setForm] = useState({
+  const { company } = branding;
+  
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    service: "Corporate Events",
-    timeline: "",
-    budget: "25 - 50 Lakhs",
+    service: "",
     message: "",
   });
 
-  const [status, setStatus] = useState<{
-    type: "success" | "error" | null;
-    message: string;
-  }>({ type: null, message: "" });
-  const [loading, setLoading] = useState(false);
+  const [moodboard, setMoodboard] = useState<MoodboardData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Load moodboard configurations
+  useEffect(() => {
+    const raw = sessionStorage.getItem("haanav_moodboard");
+    if (raw) {
+      try {
+        const parsed: MoodboardData = JSON.parse(raw);
+        setMoodboard(parsed);
+        
+        // Auto-select matching service
+        const matchedService = parsed.serviceType === "Events" ? "Bespoke Events" : "Luxury Interiors";
+        
+        setFormData((prev) => ({
+          ...prev,
+          service: matchedService,
+          message: `Interested in creating a concept based on my moodboard:\n- Domain: ${parsed.serviceType}\n- Style Theme: ${parsed.style}\n- Textures: ${parsed.materials}\n- Accent Glow: ${parsed.lighting}\n\n[Please describe your specific requirements here...]`,
+        }));
+      } catch (e) {
+        console.error("Failed to parse moodboard from storage", e);
+      }
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearMoodboard = () => {
+    sessionStorage.removeItem("haanav_moodboard");
+    setMoodboard(null);
+    setFormData((prev) => ({
+      ...prev,
+      service: "",
+      message: "",
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.phone) {
-      setStatus({
-        type: "error",
-        message: "Please enter your name, email, and phone number.",
-      });
+    if (!formData.name || !formData.email || !formData.service) {
+      setSubmitStatus("error");
+      setErrorMessage("Please fill in all required fields (Name, Email, and Service).");
       return;
     }
-    setLoading(true);
-    setStatus({ type: null, message: "" });
 
-    // Format message to bundle extra fields (timeline, budget) for schema compliance
-    const formattedMessage = `[Project Timeline/Date: ${form.timeline || "TBD"}] [Budget Bracket: ${form.budget}] Client Brief: ${form.message}`;
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+
+    const payload = {
+      ...formData,
+      moodboard: moodboard ? `${moodboard.style} | Textures: ${moodboard.materials} | Light: ${moodboard.lighting}` : "None",
+      timestamp: new Date().toISOString(),
+      status: "New"
+    };
 
     try {
-      const result = await submitInquiry({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        service: form.service,
-        message: formattedMessage,
-      });
-
-      if (result.success) {
-        setStatus({
-          type: "success",
-          message: "Commission inquiry received. A design representative will reach out within 24 hours.",
-        });
-        setForm({
-          name: "",
-          email: "",
-          phone: "",
-          service: "Corporate Events",
-          timeline: "",
-          budget: "25 - 50 Lakhs",
-          message: "",
-        });
+      // 1. Save in Firestore / LocalStorage Mock DB for Admin Dashboard visibility
+      if (!isMock && db) {
+        await addDoc(collection(db, "inquiries"), payload);
       } else {
-        setStatus({
-          type: "error",
-          message: "Form submission failed. Please try again.",
-        });
+        await mockDb.addDoc("inquiries", payload);
       }
-    } catch (err) {
-      setStatus({
-        type: "error",
-        message: "An unexpected error occurred. Please try again.",
+
+      // 2. Submit to Google Apps Script (if configured)
+      if (appsScriptUrl) {
+        try {
+          // Send as text/plain to avoid pre-flight issues in Google Apps Script redirects
+          await fetch(appsScriptUrl, {
+            method: "POST",
+            mode: "no-cors", // Crucial for Google Apps Script redirects
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+        } catch (scriptErr) {
+          console.warn("Google Apps Script delivery warning (leads still saved locally):", scriptErr);
+        }
+      }
+
+      // Reset Form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
       });
+      sessionStorage.removeItem("haanav_moodboard");
+      setMoodboard(null);
+      setSubmitStatus("success");
+    } catch (err: any) {
+      console.error("Submission failed", err);
+      setSubmitStatus("error");
+      setErrorMessage(err.message || "An error occurred while saving your inquiry.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0B2B1A] text-[#F8F1E5] pt-32 pb-24 relative overflow-hidden select-none">
-      
-      {/* Background visual detail */}
-      <div className="absolute inset-0 opacity-[0.01] pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
-      <div className="absolute -left-48 top-1/4 w-96 h-96 bg-[#D4A256]/5 rounded-full filter blur-[120px] pointer-events-none" />
-      <div className="absolute -right-48 bottom-1/4 w-96 h-96 bg-[#D4A256]/5 rounded-full filter blur-[120px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+    <div id="contact" className="w-full min-h-screen bg-[#031F12] html-light:bg-[#FAFAFA] text-stone-100 html-light:text-stone-900 transition-colors duration-300 pt-32 pb-20">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         
-        {/* Navigation back helper */}
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-stone-400 hover:text-[#D4A256] text-[10px] uppercase tracking-widest font-montserrat font-bold transition-colors duration-300 mb-10 cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Back to Site
-        </button>
+        {/* Title */}
+        <div className="text-center mb-16 max-w-xl mx-auto">
+          <span className="text-[10px] uppercase tracking-[0.3em] font-medium font-montserrat text-[#D4AF37] block mb-3 animate-pulse">
+            Private Consultation
+          </span>
+          <h1 className="text-4xl md:text-5xl font-serif text-white html-light:text-stone-900 font-light tracking-wide">
+            Bespoke <span className="italic font-normal text-[#D4AF37]">Inquiry Form</span>
+          </h1>
+          <p className="text-xs text-stone-400 html-light:text-stone-500 font-light mt-4 leading-relaxed font-sans">
+            Connect with our executive design team. Every project begins with a conversation about scale, aesthetics, and materials.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 items-start">
+        {/* Contact Form & Info Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          {/* LEFT COLUMN: Studio Information (5 columns wide) */}
-          <div className="lg:col-span-5 flex flex-col gap-8 text-left">
+          {/* Left Column: Contact details (Columns: 5) */}
+          <div className="lg:col-span-5 flex flex-col gap-8 bg-[#02150C] html-light:bg-stone-50 border border-[#073C23] html-light:border-stone-200 p-8 rounded-sm shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-[#D4AF37]/5 rounded-bl-full pointer-events-none" />
+            
             <div>
-              <span className="text-[11px] uppercase tracking-[0.25em] text-[#D4A256] font-semibold font-montserrat flex items-center gap-1.5 mb-3">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                Reserve Consultation
+              <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-semibold font-montserrat block mb-2">
+                Office Hours
               </span>
-              <h3 className="text-3xl md:text-5xl font-serif font-light tracking-wide uppercase leading-tight">
-                Commission <br />
-                Your <span className="italic font-normal text-[#D4A256] tracking-normal">Vision</span>
+              <h3 className="font-serif text-lg text-white html-light:text-stone-950 font-light tracking-wide">
+                Haanav Concierge Office
               </h3>
-              <p className="text-stone-300 font-sans text-xs md:text-sm leading-relaxed mt-4 max-w-sm">
-                Our spatial architects and event producers are ready to coordinate your landmark celebration or luxury residential project. Let us curate your atmosphere.
+              <p className="text-xs text-stone-400 html-light:text-stone-500 font-sans font-light mt-3 leading-relaxed">
+                Our luxury design specialists are available Monday to Saturday for visual walk-throughs and site assessments.
               </p>
             </div>
 
-            {/* Studio parameters */}
-            <div className="flex flex-col gap-4 font-sans text-stone-400 text-xs">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
+            <div className="flex flex-col gap-4 font-sans text-xs">
+              <div className="flex items-start gap-4">
+                <MapPin className="text-[#D4AF37] shrink-0 mt-0.5" size={16} />
                 <div>
-                  <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Studio Address</span>
-                  <span>Bhimavaram, Andhra Pradesh, India</span>
+                  <h4 className="font-semibold text-white html-light:text-stone-900 mb-0.5">Address</h4>
+                  <p className="text-stone-400 html-light:text-stone-500 leading-normal">{company.location.address}</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-4">
+                <Phone className="text-[#D4AF37] shrink-0 mt-0.5" size={16} />
                 <div>
-                  <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Direct Call</span>
-                  <span>+91 81791 14167</span>
+                  <h4 className="font-semibold text-white html-light:text-stone-900 mb-0.5">Phone</h4>
+                  <a href={`tel:${company.contacts.phoneRaw}`} className="text-stone-400 html-light:text-stone-500 hover:text-white html-light:hover:text-stone-950 transition-colors">
+                    {company.contacts.phone}
+                  </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <Mail className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-4">
+                <Mail className="text-[#D4AF37] shrink-0 mt-0.5" size={16} />
                 <div>
-                  <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block mb-1">Email Inquiries</span>
-                  <span>haanaveviors@gmail.com</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-4 h-4 text-[#D4A256] mt-0.5 flex-shrink-0" />
-                <div>
-                  <span className="text-[10px] font-montserrat uppercase tracking-wider text-white font-bold block block mb-1">Studio Hours</span>
-                  <span>Monday – Saturday: 10:00 AM – 7:00 PM</span>
+                  <h4 className="font-semibold text-white html-light:text-stone-900 mb-0.5">Email</h4>
+                  <a href={`mailto:${company.contacts.email}`} className="text-stone-400 html-light:text-stone-500 hover:text-white html-light:hover:text-stone-950 transition-colors">
+                    {company.contacts.email}
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* Faded brand credit */}
-            <div className="flex items-center gap-2.5 pt-8 border-t border-[#09472A]/50">
-              <img 
-                src="/assets/logo.png" 
-                alt="Haanav Logo" 
-                className="w-8 h-8 rounded-full border border-[#D4A256]/30"
-              />
-              <span className="font-serif tracking-[0.1em] text-white">
-                Haanav <span className="text-[#D4A256] font-semibold">Eviors</span>
-              </span>
-            </div>
+            {/* If moodboard active, show it */}
+            {moodboard && (
+              <div className="border-t border-[#073C23] html-light:border-stone-200 pt-6 mt-4">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold font-montserrat flex items-center gap-1">
+                    <Sparkles size={11} />
+                    Active Moodboard
+                  </span>
+                  <button
+                    onClick={handleClearMoodboard}
+                    className="text-[9px] text-stone-500 hover:text-[#D4AF37] uppercase tracking-wider font-montserrat transition-colors"
+                  >
+                    Clear Setup
+                  </button>
+                </div>
 
+                <div className="bg-[#031C10] html-light:bg-stone-200/50 p-4 border border-[#D4AF37]/25 rounded-sm">
+                  <p className="text-[11px] text-stone-300 html-light:text-stone-700 leading-relaxed font-light">
+                    Your form is pre-loaded with **{moodboard.style}** concept parameters, texture palette selections (**{moodboard.materials}**), and lighting accents.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* RIGHT COLUMN: Client Form Card (7 columns wide) */}
-          <div className="lg:col-span-7">
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full bg-[#123D26]/75 backdrop-blur-md border border-[#1F6B41]/25 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden text-left"
-            >
+          {/* Right Column: Submission Form (Columns: 7) */}
+          <div className="lg:col-span-7 bg-[#02150C] html-light:bg-stone-50 border border-[#073C23] html-light:border-stone-200 p-8 rounded-sm shadow-xl">
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
               
-              {/* Gold Top Hairline Border */}
-              <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4A256] to-transparent" />
-
-              <h4 className="font-montserrat text-xs uppercase tracking-widest text-white font-bold mb-6">
-                Consultation Brief Setup
-              </h4>
-
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                
-                {/* 2-Field Row: Name & Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Your Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Anirudh K. Reddy"
-                      disabled={loading}
-                      value={form.name}
-                      onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Email Address</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="e.g. anirudh@domain.com"
-                      disabled={loading}
-                      value={form.email}
-                      onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
-                    />
+              {/* Form Validation Feedback Banner */}
+              {submitStatus === "success" && (
+                <div className="flex items-start gap-3 p-4 bg-[#0A502F]/20 border border-green-500/50 rounded-sm text-green-300 text-xs">
+                  <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-green-400" />
+                  <div>
+                    <h4 className="font-bold text-white html-light:text-stone-900">Inquiry Received Successfully!</h4>
+                    <p className="mt-1 text-stone-400 html-light:text-stone-600 leading-normal">
+                      Thank you for contacting Haanav Eviors. A luxury consultant has been notified and will reach out to you within 24 business hours.
+                    </p>
                   </div>
                 </div>
+              )}
 
-                {/* 2-Field Row: Phone & Service Dropdown */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Phone Number</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. +91 81791 14167"
-                      disabled={loading}
-                      value={form.phone}
-                      onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Service of Interest</label>
-                    <div className="relative">
-                      <select
-                        value={form.service}
-                        disabled={loading}
-                        onChange={(e) => setForm(prev => ({ ...prev, service: e.target.value }))}
-                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-stone-300 rounded px-3 py-2.5 text-xs font-sans transition-all focus:outline-none appearance-none cursor-pointer"
-                      >
-                        <option value="Corporate Events" className="bg-stone-950">Corporate Events</option>
-                        <option value="Bespoke Weddings" className="bg-stone-950">Bespoke Weddings</option>
-                        <option value="Residential Interiors" className="bg-stone-950">Residential Interiors</option>
-                        <option value="Commercial Interiors" className="bg-stone-950">Commercial Interiors</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-stone-500">
-                        <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                        </svg>
-                      </div>
-                    </div>
+              {submitStatus === "error" && (
+                <div className="flex items-start gap-3 p-4 bg-red-950/20 border border-red-500/50 rounded-sm text-red-300 text-xs">
+                  <AlertCircle size={16} className="shrink-0 mt-0.5 text-red-400" />
+                  <div>
+                    <h4 className="font-bold text-white html-light:text-stone-900">Submission Alert</h4>
+                    <p className="mt-1 text-stone-400 html-light:text-stone-600 leading-normal">
+                      {errorMessage}
+                    </p>
                   </div>
                 </div>
+              )}
 
-                {/* 2-Field Row: Projected Timeline & Budget Range */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Projected Timeline / Date</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="e.g. October 2026 / Dec 15"
-                        disabled={loading}
-                        value={form.timeline}
-                        onChange={(e) => setForm(prev => ({ ...prev, timeline: e.target.value }))}
-                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none"
-                      />
-                      <Calendar className="absolute right-3 top-3 w-3.5 h-3.5 text-stone-500 pointer-events-none" />
-                    </div>
-                  </div>
+              {/* Name field */}
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2 font-montserrat">
+                  Client Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Marcus Vance"
+                  required
+                  className="w-full px-4 py-3 bg-[#031C10] html-light:bg-white border border-[#073C23] html-light:border-stone-300 text-white html-light:text-stone-900 rounded-sm focus:outline-none focus:border-[#D4AF37] font-sans text-xs transition-colors duration-300"
+                />
+              </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Estimated Budget Bracket</label>
-                    <div className="relative">
-                      <select
-                        value={form.budget}
-                        disabled={loading}
-                        onChange={(e) => setForm(prev => ({ ...prev, budget: e.target.value }))}
-                        className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-stone-300 rounded px-3 py-2.5 text-xs font-sans transition-all focus:outline-none appearance-none cursor-pointer"
-                      >
-                        <option value="Under 10 Lakhs" className="bg-stone-950">Under 10 Lakhs</option>
-                        <option value="10 - 25 Lakhs" className="bg-stone-950">10 - 25 Lakhs</option>
-                        <option value="25 - 50 Lakhs" className="bg-stone-950">25 - 50 Lakhs</option>
-                        <option value="50 Lakhs +" className="bg-stone-950">50 Lakhs +</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-stone-500">
-                        <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Message Textarea */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[9px] uppercase tracking-wider text-stone-400 font-montserrat font-semibold">Design Brief / Message Details</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Describe your design parameters, style preferences, and key goals..."
-                    disabled={loading}
-                    value={form.message}
-                    onChange={(e) => setForm(prev => ({ ...prev, message: e.target.value }))}
-                    className="w-full bg-stone-950/60 border border-stone-850/60 focus:border-[#D4A256] text-white rounded px-3 py-2.5 text-xs font-sans placeholder-stone-600 transition-all focus:outline-none resize-none"
+              {/* Email and Phone Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2 font-montserrat">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="e.g. marcus@vanguard.com"
+                    required
+                    className="w-full px-4 py-3 bg-[#031C10] html-light:bg-white border border-[#073C23] html-light:border-stone-300 text-white html-light:text-stone-900 rounded-sm focus:outline-none focus:border-[#D4AF37] font-sans text-xs transition-colors duration-300"
                   />
                 </div>
-
-                {/* Submit Row & Feedback */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-2">
-                  
-                  {/* Feedback Messages */}
-                  <div className="flex-grow">
-                    <AnimatePresence mode="wait">
-                      {status.type && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          className={`flex items-center gap-2 text-[10px] tracking-wide font-sans ${
-                            status.type === "success" ? "text-emerald-400" : "text-[#D4A256]"
-                          }`}
-                        >
-                          {status.type === "success" ? (
-                            <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" />
-                          ) : (
-                            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                          )}
-                          <span>{status.message}</span>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Submit button */}
-                  <Button
-                    type="submit"
-                    variant="gold"
-                    size="sm"
-                    disabled={loading}
-                    className="px-8 py-3.5 font-montserrat uppercase text-[9px] tracking-widest font-bold flex items-center justify-center gap-1.5 transition-all shadow-[0_0_20px_rgba(212,162,86,0.25)] hover:shadow-[0_0_35px_rgba(212,162,86,0.45)]"
-                  >
-                    {loading ? "Processing..." : "Submit Consultation Request"}
-                  </Button>
-                  
+                <div>
+                  <label className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2 font-montserrat">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="e.g. +91 99999 88888"
+                    className="w-full px-4 py-3 bg-[#031C10] html-light:bg-white border border-[#073C23] html-light:border-stone-300 text-white html-light:text-stone-900 rounded-sm focus:outline-none focus:border-[#D4AF37] font-sans text-xs transition-colors duration-300"
+                  />
                 </div>
+              </div>
 
-              </form>
+              {/* Service selection */}
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2 font-montserrat">
+                  Bespoke Service *
+                </label>
+                <select
+                  name="service"
+                  value={formData.service}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-[#031C10] html-light:bg-white border border-[#073C23] html-light:border-stone-300 text-stone-300 html-light:text-stone-800 rounded-sm focus:outline-none focus:border-[#D4AF37] font-sans text-xs transition-colors duration-300"
+                >
+                  <option value="" disabled>Select a Domain</option>
+                  <option value="Bespoke Events">Bespoke Events (Weddings / Gatherings)</option>
+                  <option value="Luxury Interiors">Luxury Interiors (Residential / Commercial)</option>
+                  <option value="Renovation Projects">Renovation Projects</option>
+                  <option value="Custom Design Solutions">Custom Design Solutions</option>
+                </select>
+              </div>
 
-            </motion.div>
+              {/* Message field */}
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block mb-2 font-montserrat">
+                  Requirements / Details
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={6}
+                  placeholder="Tell us about the space or event scale, location, timelines, and preferred materials..."
+                  className="w-full px-4 py-3 bg-[#031C10] html-light:bg-white border border-[#073C23] html-light:border-stone-300 text-white html-light:text-stone-900 rounded-sm focus:outline-none focus:border-[#D4AF37] font-sans text-xs leading-relaxed transition-colors duration-300"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-[#D4AF37] hover:bg-[#C5A028] disabled:bg-stone-800 disabled:text-stone-600 disabled:cursor-not-allowed text-[#031F12] font-bold text-xs uppercase tracking-widest rounded-sm transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.01] shadow-lg shadow-[#D4AF37]/10"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw size={14} className="animate-spin" />
+                    Submitting Concierge Pipeline...
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} />
+                    Submit Private Inquiry
+                  </>
+                )}
+              </button>
+
+            </form>
+
           </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }
